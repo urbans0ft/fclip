@@ -1,5 +1,5 @@
 # fclip
-In reference to the windows cmd "clip" fclip copies files to the windows clipboard so one can insert these files later on using ctrl + v.
+In reference to the windows cmd `clip` `fclip` copies files to the windows clipboard so one can insert these files later on using ctrl + v.
 
 Inspired by [stackoverflow question](https://stackoverflow.com/q/25708895/10224443).
 
