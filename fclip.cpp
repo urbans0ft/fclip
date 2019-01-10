@@ -4,13 +4,17 @@
 #include <ShellApi.h> // HDROP
 #include <tchar.h>    // e.g. _tcslen
 
-#if defined(__MINGW32__)
+#if defined(__MINGW32__) && defined(_UNICODE)
+#define MINGW_UNICODE
+#endif
+
+#ifdef MINGW_UNICODE
 int main(void)
 #else
 int _tmain(int argc, TCHAR* argv[])
 #endif
 {
-#if defined(__MINGW32__) && defined(_UNICODE)
+#ifdef MINGW_UNICODE
     int     argc;
     LPWSTR* argv = CommandLineToArgvW(GetCommandLine(),&argc);
 #endif
