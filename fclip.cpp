@@ -1,9 +1,19 @@
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-#include <Shlobj.h> // DROPFILES
-#include <tchar.h>  // e.g. _tcslen
+#include <Shlobj.h>   // DROPFILES
+#include <ShellApi.h> // HDROP
+#include <tchar.h>    // e.g. _tcslen
 
+#if defined(__MINGW32__)
+int main(void)
+#else
 int _tmain(int argc, TCHAR* argv[])
+#endif
 {
+#if defined(__MINGW32__) && defined(_UNICODE)
+    int     argc;
+    LPWSTR* argv = CommandLineToArgvW(GetCommandLine(),&argc);
+#endif
     // calculate *bytes* needed for memory allocation
     int clpSize = sizeof(DROPFILES);
     for (int i = 1; i < argc; i++)
