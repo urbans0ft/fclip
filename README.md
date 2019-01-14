@@ -34,5 +34,11 @@ i686-w64-mingw32-g++ -o fclip -static fclip.cpp
 x86_64-w64-mingw32-g++ -o fclip -static fclip.cpp
 ```
 
+## g++ under Cygwin
+**Attention:** The g++ compiler from the GCC under Cygwin does **not** support Unicode encoding.
+```
+g++ -o fclip fclip.cpp
+```
+
 # References
 * Inspired by [stackoverflow question](https://stackoverflow.com/q/25708895/10224443)
