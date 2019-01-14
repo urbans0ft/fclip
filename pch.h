@@ -8,4 +8,18 @@
 #include <ShellApi.h> // HDROP
 #include <tchar.h>    // e.g. _tcslen
 
+#ifdef __CYGWIN__
+#if defined(_UNICODE) || defined(UNICODE)
+#error UNICODE is not supported for GCC under Cygwin. \
+       Use MinGW GCC instead.
+#endif
+#define _tcscpy strcpy
+#define _tcslen strlen
+#define _tmain main
+#endif
+
+#if defined(__MINGW32__) && defined(_UNICODE)
+#define MINGW_UNICODE
+#endif
+
 #endif //PCH_H
