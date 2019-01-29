@@ -10,12 +10,22 @@ int _tmain(int argc, TCHAR* argv[])
     int     argc;
     LPWSTR* argv = CommandLineToArgvW(GetCommandLine(),&argc);
 #endif
-    // calculate *bytes* needed for memory allocation
-    int clpSize = sizeof(DROPFILES);
-    for (int i = 1; i < argc; i++)
-        clpSize += sizeof(TCHAR) * (_tcslen(argv[i]) + 1); // + 1 => '\0'
+    // create / fill full file path buffer and calculate global buffer
+    TCHAR** files    = new TCHAR*[argc-1];
+    DWORD*  bufSizes = new DWORD[argc-1];
+    int     clpSize  = sizeof(DROPFILES);
+    
+    for (int i = 1; i < argc; i++) {
+        bufSizes[i-1] = GetFullPathName(argv[i], 0, NULL, NULL);
+        files[i-1]    = new TCHAR[bufSizes[i-1]];
+        GetFullPathName(argv[i], bufSizes[i-1], files[i-1], NULL);
+        if (GetFileAttributes(files[i-1]) == INVALID_FILE_ATTRIBUTES)
+            return INVALID_FILE_ATTRIBUTES;
+        // calculate *bytes* needed for memory allocation
+        clpSize += sizeof(TCHAR) * (bufSizes[i]);
+    }
     clpSize += sizeof(TCHAR); // two \0 needed at the end
-
+    
     // allocate the zero initialized memory
     HDROP hdrop   = (HDROP)GlobalAlloc(GHND, clpSize);
     DROPFILES* df = (DROPFILES*)GlobalLock(hdrop);
@@ -26,10 +36,10 @@ int _tmain(int argc, TCHAR* argv[])
 
     // copy the command line args to the allocated memory
     TCHAR* dstStart = (TCHAR*)&df[1];
-    for (int i = 1; i < argc; i++)
+    for (int i = 0; i < argc - 1; i++)
     {
-        _tcscpy(dstStart, argv[i]);
-        dstStart = &dstStart[_tcslen(argv[i]) + 1]; // + 1 => get beyond '\0'
+        _tcscpy(dstStart, files[i]);
+        dstStart = &dstStart[bufSizes[i]];
     }
     GlobalUnlock(hdrop);
 
