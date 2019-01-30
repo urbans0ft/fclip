@@ -22,7 +22,7 @@ int _tmain(int argc, TCHAR* argv[])
         if (GetFileAttributes(files[i-1]) == INVALID_FILE_ATTRIBUTES)
             return INVALID_FILE_ATTRIBUTES;
         // calculate *bytes* needed for memory allocation
-        clpSize += sizeof(TCHAR) * (bufSizes[i]);
+        clpSize += sizeof(TCHAR) * (bufSizes[i-1]);
     }
     clpSize += sizeof(TCHAR); // two \0 needed at the end
     
