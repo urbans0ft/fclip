@@ -7,6 +7,7 @@
 #include <Shlobj.h>   // DROPFILES
 #include <ShellApi.h> // HDROP
 #include <tchar.h>    // e.g. _tcslen
+#include <Shlwapi.h>  // PathStripPath
 
 #ifdef __CYGWIN__
 #if defined(_UNICODE) || defined(UNICODE)

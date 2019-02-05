@@ -1,5 +1,7 @@
 #include "pch.h" // Pre-compiled header
 
+void paste();
+
 #ifdef MINGW_UNICODE
 int main(void)
 #else
@@ -49,5 +51,55 @@ int _tmain(int argc, TCHAR* argv[])
     SetClipboardData(CF_HDROP, hdrop);
     CloseClipboard();
 
+	paste();
+
     return 0;
+}
+
+void paste()
+{
+	OpenClipboard(NULL);
+	UINT format = 0;
+	while ((format = EnumClipboardFormats(format)) != 0)
+	{
+		TCHAR formatName[255];
+		GetClipboardFormatName(
+			format,
+			formatName,
+			255
+		);
+		wprintf(L"%i - %ls\n",format, formatName);
+	}
+	HANDLE hHdrop = GetClipboardData(CF_HDROP);
+	DROPFILES* df = (DROPFILES*)GlobalLock(hHdrop);
+	GlobalUnlock(hHdrop);
+	CloseClipboard();
+
+	return;
+	TCHAR* startFiles;
+	int    fileCount = 0;
+	
+	startFiles = (TCHAR*)&df[1];
+	while (startFiles[0] != '\0')
+	{
+		fileCount++;
+		startFiles += _tcslen(startFiles) + 1; // get beyond \0
+	}	
+	TCHAR** oldFiles = new TCHAR*[fileCount];
+	TCHAR** newFiles = new TCHAR*[fileCount];
+
+	startFiles = (TCHAR*)&df[1];
+	for (int i = 0; i < fileCount; i++)
+	{
+		int fileNameLength = _tcslen(startFiles) + 1; // + 1 => \0
+		oldFiles[i] = startFiles;
+		newFiles[i] = new TCHAR[fileNameLength];
+		_tcscpy(newFiles[i], oldFiles[i]);
+		PathStripPath(newFiles[i]);
+		startFiles += fileNameLength;
+		wprintf(L"copy %ls %ls\n", oldFiles[i], newFiles[i]);
+		CopyFile(oldFiles[i], newFiles[i], FALSE);
+	}
+
+	int lala = 0;
 }
