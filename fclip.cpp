@@ -1,6 +1,7 @@
 #include "pch.h" // Pre-compiled header
 
 void paste();
+void olePaste();
 
 #ifdef MINGW_UNICODE
 int main(void)
@@ -46,12 +47,13 @@ int _tmain(int argc, TCHAR* argv[])
     GlobalUnlock(hdrop);
 
     // prepare the clipboard
-    OpenClipboard(NULL);
-    EmptyClipboard();
-    SetClipboardData(CF_HDROP, hdrop);
-    CloseClipboard();
+    //OpenClipboard(NULL);
+    //EmptyClipboard();
+    //SetClipboardData(CF_HDROP, hdrop);
+    //CloseClipboard();
 
-	paste();
+	//paste();
+	olePaste();
 
     return 0;
 }
@@ -112,5 +114,64 @@ void paste()
 		CopyFile(oldFiles[i], newFiles[i], FALSE);
 	}
 
+	int lala = 0;
+}
+// http://netez.com/2xExplorer/shellFAQ/adv_clip.html
+void olePaste()
+{
+	HRESULT result;
+	wprintf(L"\nFormats needed:\n");
+	UINT ufileDesc = RegisterClipboardFormat(
+		CFSTR_FILEDESCRIPTOR
+	);
+	UINT ufileContent = RegisterClipboardFormat(
+		CFSTR_FILECONTENTS
+	);
+	wprintf(L"%i - %ls\n", ufileDesc, CFSTR_FILEDESCRIPTOR);
+	wprintf(L"%i - %ls\n", ufileContent, CFSTR_FILECONTENTS);
+
+	IDataObject* dataObject;
+	result = OleGetClipboard(&dataObject);
+	IEnumFORMATETC* enumFormats;
+	result = dataObject->EnumFormatEtc(DATADIR::DATADIR_GET, &enumFormats);
+	FORMATETC format;
+	ULONG fetched;
+	wprintf(L"Formats on the clipboard:\n");
+	FORMATETC* formatDescriptor = nullptr;
+	FORMATETC* formatContents = nullptr;
+	while (SUCCEEDED(enumFormats->Next(1, &format, &fetched))
+		&& fetched != 0)
+	{
+		const int cchMaxCount = 255;
+		TCHAR lpszFormatName[cchMaxCount];
+		GetClipboardFormatName(
+			format.cfFormat,
+			lpszFormatName,
+			cchMaxCount
+		);
+		wprintf(L"%i - %ls\n", format.cfFormat, lpszFormatName);
+		if (format.cfFormat == ufileDesc)
+		{
+			formatDescriptor = &format;
+			continue;
+		}
+		if (format.cfFormat == ufileContent)
+		{
+			formatContents = &format;
+			continue;
+		}
+	}
+	if (formatDescriptor == nullptr || formatContents == nullptr)
+	{
+		wprintf(L"Needed formats not within the clipboard.");
+		return;
+	}
+	STGMEDIUM mediumDescriptor;
+	result = dataObject->GetData(formatDescriptor, &mediumDescriptor);
+	LPCTSTR ptxt = (LPCTSTR)GlobalLock(mediumDescriptor.hGlobal); // dont' forget GlobalUnlock(stgm.hGlobal);
+
+	STGMEDIUM mediumContents;
+	result = dataObject->GetData(formatContents, &mediumContents);
+	ptxt = (LPCTSTR)GlobalLock(mediumContents.hGlobal); // dont' forget GlobalUnlock(stgm.hGlobal);
 	int lala = 0;
 }
