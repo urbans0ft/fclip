@@ -56,6 +56,17 @@ int _tmain(int argc, TCHAR* argv[])
     return 0;
 }
 
+/**
+ * OleGetClipboard() => IDataObject
+ * IDataObject::EnumFormatEtc => IEnumFORMATETC
+ * IEnumFORMATETC::next() iterate and search for appropriate IDs
+ * 1. Call RegisterClipboardFormat() with
+ *   - CFSTR_FILEDESCRIPTOR
+ *   - CFSTR_FILECONTENTS
+ * 2. Call pDataObject->GetData() with received ID from 1.
+ * 3. This creates STGMEDIUM structures which might provide IStream
+ */
+
 void paste()
 {
 	OpenClipboard(NULL);
