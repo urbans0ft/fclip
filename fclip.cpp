@@ -135,13 +135,13 @@ void olePaste()
 	IEnumFORMATETC* enumFormats;
 	result = dataObject->EnumFormatEtc(DATADIR::DATADIR_GET, &enumFormats);
 	FORMATETC format;
-	ULONG fetched;
-	wprintf(L"Formats on the clipboard:\n");
-	FORMATETC* formatDescriptor = nullptr;
-	FORMATETC* formatContents = nullptr;
-	while (SUCCEEDED(enumFormats->Next(1, &format, &fetched))
-		&& fetched != 0)
+	wprintf(L"\n\nFormats on the clipboard:\n");
+	FORMATETC formatDescriptor; ZeroMemory(&formatDescriptor, sizeof(FORMATETC));
+	FORMATETC formatContents; ZeroMemory(&formatContents, sizeof(FORMATETC));
+	while (enumFormats->Next(1, &format, NULL) == S_OK)
 	{
+		DWORD tymed;
+		STGMEDIUM medium;
 		const int cchMaxCount = 255;
 		TCHAR lpszFormatName[cchMaxCount];
 		GetClipboardFormatName(
@@ -149,29 +149,126 @@ void olePaste()
 			lpszFormatName,
 			cchMaxCount
 		);
-		wprintf(L"%i - %ls\n", format.cfFormat, lpszFormatName);
-		if (format.cfFormat == ufileDesc)
-		{
-			formatDescriptor = &format;
-			continue;
+		tymed = format.tymed;
+		wprintf(L"Found: %i - %ls\n", format.cfFormat, lpszFormatName);
+		if (TYMED_HGLOBAL & tymed) {
+			wprintf(L"\tTYMED_HGLOBAL\n");
 		}
-		if (format.cfFormat == ufileContent)
-		{
-			formatContents = &format;
-			continue;
+		if (TYMED_FILE & tymed) {
+			wprintf(L"\tTYMED_FILE\n");
 		}
+		if (TYMED_ISTREAM & tymed) {
+			wprintf(L"\tTYMED_ISTREAM\n");
+		}
+		if (TYMED_ISTORAGE & tymed) {
+			wprintf(L"\tTYMED_ISTORAGE\n");
+		}
+		if (TYMED_GDI & tymed) {
+			wprintf(L"\tTYMED_GDI\n");
+		}
+		if (TYMED_MFPICT & tymed) {
+			wprintf(L"\tTYMED_MFPICT\n");
+		}
+		if (TYMED_ENHMF & tymed) {
+			wprintf(L"\tTYMED_ENHMF\n");
+		}
+		if (TYMED_NULL & tymed) {
+			wprintf(L"\tTYMED_NULL\n");
+		}
+		result = dataObject->GetData(&format, &medium);
+		tymed = medium.tymed;
+		wprintf(L"Medium result:\n");
+		void* p;
+		switch (result)
+		{
+		case S_OK:
+			wprintf(L"S_OK\n");
+			if (TYMED_HGLOBAL & tymed) {
+				wprintf(L"\tTYMED_HGLOBAL\n");
+				p = GlobalLock(medium.hGlobal);
+			}
+			if (TYMED_FILE & tymed) {
+				wprintf(L"\tTYMED_FILE\n");
+			}
+			if (TYMED_ISTREAM & tymed) {
+				wprintf(L"\tTYMED_ISTREAM\n");
+			}
+			if (TYMED_ISTORAGE & tymed) {
+				wprintf(L"\tTYMED_ISTORAGE\n");
+			}
+			if (TYMED_GDI & tymed) {
+				wprintf(L"\tTYMED_GDI\n");
+			}
+			if (TYMED_MFPICT & tymed) {
+				wprintf(L"\tTYMED_MFPICT\n");
+			}
+			if (TYMED_ENHMF & tymed) {
+				wprintf(L"\tTYMED_ENHMF\n");
+			}
+			if (TYMED_NULL & tymed) {
+				wprintf(L"\tTYMED_NULL\n");
+			}
+			break;
+		case DV_E_LINDEX:
+			wprintf(L"The value for lindex is not valid; currently, only -1 is supported.");
+			break;
+		case DV_E_FORMATETC:
+			wprintf(L"The value for pformatetcIn is not valid.");
+			break;
+		case DV_E_TYMED:
+			wprintf(L"The tymed value is not valid.");
+			break;
+		case DV_E_DVASPECT:
+			wprintf(L"The dwAspect value is not valid.");
+			break;
+		case OLE_E_NOTRUNNING:
+			wprintf(L"The object application is not running.");
+			break;
+		case STG_E_MEDIUMFULL:
+			wprintf(L"An error occurred when allocating the medium.");
+			break;
+		case E_UNEXPECTED:
+			wprintf(L"An unexpected error has occurred.");
+			break;
+		case E_INVALIDARG:
+			wprintf(L"The dwDirection value is not valid.");
+			break;
+		case E_OUTOFMEMORY:
+			wprintf(L"There was insufficient memory available for this operation.");
+			break;
+		default:
+			wprintf(L"Unknown error");
+		}
+		wprintf(L"\n###\n");
 	}
-	if (formatDescriptor == nullptr || formatContents == nullptr)
+	if (!*(int*)&formatDescriptor || !*(int*)&formatContents)
 	{
 		wprintf(L"Needed formats not within the clipboard.");
 		return;
 	}
-	STGMEDIUM mediumDescriptor;
-	result = dataObject->GetData(formatDescriptor, &mediumDescriptor);
-	LPCTSTR ptxt = (LPCTSTR)GlobalLock(mediumDescriptor.hGlobal); // dont' forget GlobalUnlock(stgm.hGlobal);
-
-	STGMEDIUM mediumContents;
-	result = dataObject->GetData(formatContents, &mediumContents);
-	ptxt = (LPCTSTR)GlobalLock(mediumContents.hGlobal); // dont' forget GlobalUnlock(stgm.hGlobal);
+//	tagTYMED
+//	STGMEDIUM medium;
+//	format.cfFormat = 49265;
+//	format.dwAspect = DVASPECT_CONTENT;
+//	format.lindex = 0;
+//	format.ptd = NULL;
+//	format.tymed = TYMED_ISTREAM;
+//	result = dataObject->GetData(&format, &medium);
+//
+//	STGMEDIUM mediumDescriptor;
+//	result = dataObject->GetData(&formatDescriptor, &mediumDescriptor);
+//	LPCTSTR ptxt = (LPCTSTR)GlobalLock(mediumDescriptor.hGlobal); // dont' forget GlobalUnlock(stgm.hGlobal);
+//
+//	LARGE_INTEGER pos = { 0, 0 };
+//	ULONG i = 0;
+//	BYTE pszBuf[1024];
+//	int nLength = 1024;
+//	STGMEDIUM mediumContents;
+//	//formatContents.cfFormat = 49265;
+//	//formatContents.dwAspect = DVASPECT_CONTENT;
+//	//formatContents.tymed = TYMED_ISTREAM;
+//	result = dataObject->GetData(&formatContents, &mediumContents);
+//	result = mediumContents.pstm->Seek(pos, STREAM_SEEK_SET, NULL);
+//	result = mediumContents.pstm->Read(pszBuf, nLength, &i);
 	int lala = 0;
 }
