@@ -120,6 +120,7 @@ void paste()
 void olePaste()
 {
 	HRESULT result;
+	result = OleInitialize(NULL);
 	wprintf(L"\nFormats needed:\n");
 	UINT ufileDesc = RegisterClipboardFormat(
 		CFSTR_FILEDESCRIPTOR
@@ -175,7 +176,6 @@ void olePaste()
 		if (TYMED_NULL & tymed) {
 			wprintf(L"\tTYMED_NULL\n");
 		}
-		format.tymed = TYMED_ISTREAM;
 		result = dataObject->GetData(&format, &medium);
 		tymed = medium.tymed;
 		wprintf(L"Medium result:\n");
