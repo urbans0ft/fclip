@@ -183,13 +183,14 @@ void olePaste()
 		LARGE_INTEGER pos = { 0, 0 };
 		BYTE pszBuf[1024];
 		ULONG read;
+		FILEGROUPDESCRIPTOR* fileDesc;
 		switch (result)
 		{
 		case S_OK:
 			wprintf(L"S_OK\n");
 			if (TYMED_HGLOBAL & tymed) {
 				wprintf(L"\tTYMED_HGLOBAL\n");
-				p = GlobalLock(medium.hGlobal);
+				fileDesc = (FILEGROUPDESCRIPTOR*)GlobalLock(medium.hGlobal);
 			}
 			if (TYMED_FILE & tymed) {
 				wprintf(L"\tTYMED_FILE\n");
