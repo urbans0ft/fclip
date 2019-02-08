@@ -22,4 +22,7 @@
 #define MINGW_UNICODE
 #endif
 
+// New entry point, instead of main().
+int run(int argc, TCHAR* argv[]);
+
 #endif //PCH_H

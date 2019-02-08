@@ -1,15 +1,7 @@
 #include "pch.h" // Pre-compiled header
 
-#ifdef MINGW_UNICODE
-int main(void)
-#else
-int _tmain(int argc, TCHAR* argv[])
-#endif
+int run(int argc, TCHAR* argv[])
 {
-#ifdef MINGW_UNICODE
-    int     argc;
-    LPWSTR* argv = CommandLineToArgvW(GetCommandLine(),&argc);
-#endif
     // create / fill full file path buffer and calculate global buffer
     TCHAR** files    = new TCHAR*[argc-1];
     DWORD*  bufSizes = new DWORD[argc-1];
