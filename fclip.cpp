@@ -175,10 +175,14 @@ void olePaste()
 		if (TYMED_NULL & tymed) {
 			wprintf(L"\tTYMED_NULL\n");
 		}
+		format.tymed = TYMED_ISTREAM;
 		result = dataObject->GetData(&format, &medium);
 		tymed = medium.tymed;
 		wprintf(L"Medium result:\n");
 		void* p;
+		LARGE_INTEGER pos = { 0, 0 };
+		BYTE pszBuf[1024];
+		ULONG read;
 		switch (result)
 		{
 		case S_OK:
@@ -192,6 +196,8 @@ void olePaste()
 			}
 			if (TYMED_ISTREAM & tymed) {
 				wprintf(L"\tTYMED_ISTREAM\n");
+				result = medium.pstm->Seek(pos, STREAM_SEEK_SET, NULL);
+				result = medium.pstm->Read(pszBuf, 1024, &read);
 			}
 			if (TYMED_ISTORAGE & tymed) {
 				wprintf(L"\tTYMED_ISTORAGE\n");
