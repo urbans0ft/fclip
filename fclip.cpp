@@ -54,6 +54,8 @@ int _tmain(int argc, TCHAR* argv[])
 
 	//paste();
 	olePaste();
+	std::string wait;
+	std::getline(std::cin, wait);
 
     return 0;
 }
@@ -116,11 +118,17 @@ void paste()
 
 	int lala = 0;
 }
+
+void olePaste2()
+{
+
+}
+
 // http://netez.com/2xExplorer/shellFAQ/adv_clip.html
 void olePaste()
 {
 	HRESULT result;
-	result = OleInitialize(NULL);
+	//result = OleInitialize(NULL);
 	wprintf(L"\nFormats needed:\n");
 	UINT ufileDesc = RegisterClipboardFormat(
 		CFSTR_FILEDESCRIPTOR
@@ -190,15 +198,14 @@ void olePaste()
 			wprintf(L"S_OK\n");
 			if (TYMED_HGLOBAL & tymed) {
 				wprintf(L"\tTYMED_HGLOBAL\n");
-				fileDesc = (FILEGROUPDESCRIPTOR*)GlobalLock(medium.hGlobal);
 			}
 			if (TYMED_FILE & tymed) {
 				wprintf(L"\tTYMED_FILE\n");
 			}
 			if (TYMED_ISTREAM & tymed) {
 				wprintf(L"\tTYMED_ISTREAM\n");
-				result = medium.pstm->Seek(pos, STREAM_SEEK_SET, NULL);
-				result = medium.pstm->Read(pszBuf, 1024, &read);
+				//result = medium.pstm->Seek(pos, STREAM_SEEK_SET, NULL);
+				//result = medium.pstm->Read(pszBuf, 1024, &read);
 			}
 			if (TYMED_ISTORAGE & tymed) {
 				wprintf(L"\tTYMED_ISTORAGE\n");
@@ -217,65 +224,38 @@ void olePaste()
 			}
 			break;
 		case DV_E_LINDEX:
-			wprintf(L"The value for lindex is not valid; currently, only -1 is supported.");
+			wprintf(L"The value for lindex is not valid; currently, only -1 is supported.\n");
 			break;
 		case DV_E_FORMATETC:
-			wprintf(L"The value for pformatetcIn is not valid.");
+			wprintf(L"The value for pformatetcIn is not valid.\n");
 			break;
 		case DV_E_TYMED:
-			wprintf(L"The tymed value is not valid.");
+			wprintf(L"The tymed value is not valid.\n");
 			break;
 		case DV_E_DVASPECT:
-			wprintf(L"The dwAspect value is not valid.");
+			wprintf(L"The dwAspect value is not valid.\n");
 			break;
 		case OLE_E_NOTRUNNING:
-			wprintf(L"The object application is not running.");
+			wprintf(L"The object application is not running.\n");
 			break;
 		case STG_E_MEDIUMFULL:
-			wprintf(L"An error occurred when allocating the medium.");
+			wprintf(L"An error occurred when allocating the medium.\n");
 			break;
 		case E_UNEXPECTED:
-			wprintf(L"An unexpected error has occurred.");
+			wprintf(L"An unexpected error has occurred.\n");
 			break;
 		case E_INVALIDARG:
-			wprintf(L"The dwDirection value is not valid.");
+			wprintf(L"The dwDirection value is not valid.\n");
 			break;
 		case E_OUTOFMEMORY:
-			wprintf(L"There was insufficient memory available for this operation.");
+			wprintf(L"There was insufficient memory available for this operation.\n");
+			break;
+		case CLIPBRD_E_BAD_DATA:
+			wprintf(L"Data on clipboard is invalid.\n");
 			break;
 		default:
-			wprintf(L"Unknown error");
+			wprintf(L"Unknown error\n");
 		}
 		wprintf(L"\n###\n");
 	}
-	if (!*(int*)&formatDescriptor || !*(int*)&formatContents)
-	{
-		wprintf(L"Needed formats not within the clipboard.");
-		return;
-	}
-//	tagTYMED
-//	STGMEDIUM medium;
-//	format.cfFormat = 49265;
-//	format.dwAspect = DVASPECT_CONTENT;
-//	format.lindex = 0;
-//	format.ptd = NULL;
-//	format.tymed = TYMED_ISTREAM;
-//	result = dataObject->GetData(&format, &medium);
-//
-//	STGMEDIUM mediumDescriptor;
-//	result = dataObject->GetData(&formatDescriptor, &mediumDescriptor);
-//	LPCTSTR ptxt = (LPCTSTR)GlobalLock(mediumDescriptor.hGlobal); // dont' forget GlobalUnlock(stgm.hGlobal);
-//
-//	LARGE_INTEGER pos = { 0, 0 };
-//	ULONG i = 0;
-//	BYTE pszBuf[1024];
-//	int nLength = 1024;
-//	STGMEDIUM mediumContents;
-//	//formatContents.cfFormat = 49265;
-//	//formatContents.dwAspect = DVASPECT_CONTENT;
-//	//formatContents.tymed = TYMED_ISTREAM;
-//	result = dataObject->GetData(&formatContents, &mediumContents);
-//	result = mediumContents.pstm->Seek(pos, STREAM_SEEK_SET, NULL);
-//	result = mediumContents.pstm->Read(pszBuf, nLength, &i);
-	int lala = 0;
 }

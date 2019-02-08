@@ -8,6 +8,9 @@
 #include <ShellApi.h> // HDROP
 #include <tchar.h>    // e.g. _tcslen
 #include <Shlwapi.h>  // PathStripPath
+// debug
+#include <iostream>
+#include <string>
 
 #ifdef __CYGWIN__
 #if defined(_UNICODE) || defined(UNICODE)
