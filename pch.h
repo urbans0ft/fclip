@@ -23,4 +23,7 @@
 #define MINGW_UNICODE
 #endif
 
+// 1 MB
+#define ISTREAM_BUF_SIZE 1073741824 
+
 #endif //PCH_H

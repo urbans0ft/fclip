@@ -1,6 +1,8 @@
 #include "pch.h" // Pre-compiled header
 
 void paste();
+void pasteByHdrop();
+void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents);
 void olePaste();
 
 #ifdef MINGW_UNICODE
@@ -52,10 +54,28 @@ int _tmain(int argc, TCHAR* argv[])
     //SetClipboardData(CF_HDROP, hdrop);
     //CloseClipboard();
 
-	//paste();
 	olePaste();
+	paste();
 
     return 0;
+}
+
+void paste()
+{
+	if (IsClipboardFormatAvailable(CF_HDROP))
+	{
+		pasteByHdrop();
+		return;
+	}
+	UINT formatFileDescriptor = RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
+	UINT formatFileContents   = RegisterClipboardFormat(CFSTR_FILECONTENTS);
+	if (IsClipboardFormatAvailable(formatFileDescriptor)
+		&& IsClipboardFormatAvailable(formatFileContents))
+	{
+		pasteByFileContents(formatFileDescriptor, formatFileContents);
+		return;
+	}
+	wprintf(L"Nothing to paste!\n");
 }
 
 /**
@@ -69,26 +89,16 @@ int _tmain(int argc, TCHAR* argv[])
  * 3. This creates STGMEDIUM structures which might provide IStream
  */
 
-void paste()
+void pasteByHdrop()
 {
 	OpenClipboard(NULL);
-	UINT format = 0;
-	while ((format = EnumClipboardFormats(format)) != 0)
-	{
-		TCHAR formatName[255];
-		GetClipboardFormatName(
-			format,
-			formatName,
-			255
-		);
-		wprintf(L"%i - %ls\n",format, formatName);
-	}
+
 	HANDLE hHdrop = GetClipboardData(CF_HDROP);
 	DROPFILES* df = (DROPFILES*)GlobalLock(hHdrop);
 	GlobalUnlock(hHdrop);
+
 	CloseClipboard();
 
-	return;
 	TCHAR* startFiles;
 	int    fileCount = 0;
 	
@@ -111,11 +121,71 @@ void paste()
 		PathStripPath(newFiles[i]);
 		startFiles += fileNameLength;
 		wprintf(L"copy %ls %ls\n", oldFiles[i], newFiles[i]);
-		CopyFile(oldFiles[i], newFiles[i], FALSE);
+		//CopyFile(oldFiles[i], newFiles[i], FALSE);
 	}
 
 	int lala = 0;
 }
+
+void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
+{
+	HRESULT result;
+	OleInitialize(NULL);
+	IDataObject* dataObject; OleGetClipboard(&dataObject);
+	FORMATETC formatDescriptor{
+		clFileDescriptor,
+		NULL,
+		DVASPECT_CONTENT,
+		-1,
+		TYMED_HGLOBAL
+	};
+	STGMEDIUM mediumDescriptor;
+	result = dataObject->GetData(&formatDescriptor, &mediumDescriptor);
+	FILEGROUPDESCRIPTOR* pFileGrpDescriptor = 
+		(FILEGROUPDESCRIPTOR*)GlobalLock(mediumDescriptor.hGlobal);
+	for (int i = 0; i < pFileGrpDescriptor->cItems; i++)
+	{
+		const FILEDESCRIPTOR& fDescriptor = pFileGrpDescriptor->fgd[i];
+		wprintf(L"File in group descriptor: %ls\n", fDescriptor.cFileName);
+		HANDLE hFile = CreateFile(
+			fDescriptor.cFileName,
+			GENERIC_WRITE,
+			0,
+			NULL,
+			CREATE_NEW,
+			fDescriptor.dwFileAttributes,
+			NULL
+		);
+		FORMATETC formatFileContents{
+			clFileContents,
+			NULL,
+			DVASPECT_CONTENT,
+			-1,
+			TYMED_ISTREAM
+		};
+		STGMEDIUM mediumFile;
+		result = dataObject->GetData(&formatFileContents, &mediumFile);
+		void * p = mediumFile.pstm;
+
+		BYTE* pBuf = new BYTE[ISTREAM_BUF_SIZE]; // 1 MB
+		ULONG read;
+		result = mediumFile.pstm->Seek({0}, STREAM_SEEK_SET, NULL);
+		do
+		{
+			DWORD written;
+			DWORD toWrite;
+			result = mediumFile.pstm->Read(pBuf, ISTREAM_BUF_SIZE, &read);
+			toWrite = read;
+			do {
+				WriteFile(hFile, &pBuf[read-toWrite], toWrite, &written, NULL);
+				toWrite -= written;
+			} while (toWrite);
+
+		} while (read == ISTREAM_BUF_SIZE);
+		CloseHandle(hFile);
+	}
+}
+
 // http://netez.com/2xExplorer/shellFAQ/adv_clip.html
 void olePaste()
 {
@@ -190,15 +260,36 @@ void olePaste()
 			wprintf(L"S_OK\n");
 			if (TYMED_HGLOBAL & tymed) {
 				wprintf(L"\tTYMED_HGLOBAL\n");
-				fileDesc = (FILEGROUPDESCRIPTOR*)GlobalLock(medium.hGlobal);
+				HGLOBAL hGlobal = GlobalLock(medium.hGlobal);
+				//fileDesc = (FILEGROUPDESCRIPTOR*)GlobalLock(medium.hGlobal);
+				if (format.cfFormat == RegisterClipboardFormat(CFSTR_PREFERREDDROPEFFECT))
+				{
+					const DWORD& operation = *(DWORD*)hGlobal;
+					
+					if (DROPEFFECT_NONE & operation)
+						wprintf(L"\tNONE\n");
+						
+					if (DROPEFFECT_COPY & operation)
+						wprintf(L"\tCOPY\n");
+						
+					if ( DROPEFFECT_MOVE & operation)
+						wprintf(L"\tMOVE\n");
+						
+					if ( DROPEFFECT_LINK & operation)
+						wprintf(L"\tLINK\n");
+						
+					if ( DROPEFFECT_SCROLL & operation)
+						wprintf(L"\tSCROLL\n");
+						
+				}
 			}
 			if (TYMED_FILE & tymed) {
 				wprintf(L"\tTYMED_FILE\n");
 			}
 			if (TYMED_ISTREAM & tymed) {
 				wprintf(L"\tTYMED_ISTREAM\n");
-				result = medium.pstm->Seek(pos, STREAM_SEEK_SET, NULL);
-				result = medium.pstm->Read(pszBuf, 1024, &read);
+				//result = medium.pstm->Seek(pos, STREAM_SEEK_SET, NULL);
+				//result = medium.pstm->Read(pszBuf, 1024, &read);
 			}
 			if (TYMED_ISTORAGE & tymed) {
 				wprintf(L"\tTYMED_ISTORAGE\n");
