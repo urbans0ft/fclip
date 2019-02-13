@@ -2,17 +2,10 @@
 
 void paste();
 void olePaste();
+void olePaste2();
 
-#ifdef MINGW_UNICODE
-int main(void)
-#else
-int _tmain(int argc, TCHAR* argv[])
-#endif
+int run(int argc, TCHAR* argv[])
 {
-#ifdef MINGW_UNICODE
-    int     argc;
-    LPWSTR* argv = CommandLineToArgvW(GetCommandLine(),&argc);
-#endif
     // create / fill full file path buffer and calculate global buffer
     TCHAR** files    = new TCHAR*[argc-1];
     DWORD*  bufSizes = new DWORD[argc-1];
@@ -53,7 +46,8 @@ int _tmain(int argc, TCHAR* argv[])
     //CloseClipboard();
 
 	//paste();
-	olePaste();
+	//olePaste();
+	olePaste2();
 	std::string wait;
 	std::getline(std::cin, wait);
 
@@ -115,20 +109,77 @@ void paste()
 		wprintf(L"copy %ls %ls\n", oldFiles[i], newFiles[i]);
 		CopyFile(oldFiles[i], newFiles[i], FALSE);
 	}
-
+	
 	int lala = 0;
 }
 
 void olePaste2()
-{
+{//49366
+	int cntClipFormat = CountClipboardFormats();
+	wprintf(L"Found %i Clipboard Formats.\n", cntClipFormat);
+	UINT iClipFormat = 0;
+	OpenClipboard(NULL);
+	while (iClipFormat = EnumClipboardFormats(iClipFormat))
+	{
+		const int cntMax = 255;
+		TCHAR szFormatName[255];
+		GetClipboardFormatName(iClipFormat, szFormatName, cntMax);
+		wprintf(L"\t %i: %ls\n", iClipFormat, szFormatName);
+	}
+	CloseClipboard();
 
+	UINT iFileContentsFormat = RegisterClipboardFormat(CFSTR_FILECONTENTS);
+	if (!IsClipboardFormatAvailable(iFileContentsFormat))
+	{
+		wprintf(L"CFSTR_FILECONTENTS not available!\n");
+		return;
+	}
+	UINT iFileDescriptorFormat = RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
+	if (!IsClipboardFormatAvailable(iFileDescriptorFormat))
+	{
+		wprintf(L"CFSTR_FILEDESCRIPTOR not available!\n");
+		return;
+	}
+	
+	HRESULT result;
+	IDataObject* dataObject;
+	result = OleInitialize(NULL);
+	result = OleGetClipboard(&dataObject);
+
+	FORMATETC fmtFileDescriptor{
+		iFileDescriptorFormat, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL
+	};
+	FORMATETC fmtFileContents{
+		iFileContentsFormat, NULL, DVASPECT_CONTENT, -1, TYMED_ISTREAM
+	};
+	STGMEDIUM stgFileDescriptor{ 0 };
+	STGMEDIUM stgFileContents{ 0 };
+	
+	result = dataObject->GetData(&fmtFileDescriptor, &stgFileDescriptor);
+	
+	IDataObject* dataObject2;
+	result = OleGetClipboard(&dataObject2);
+	result = dataObject2->GetData(&fmtFileContents, &stgFileContents);
+	
+	FILEGROUPDESCRIPTOR* fileGrpDescriptor =
+		(FILEGROUPDESCRIPTOR*)GlobalLock(stgFileDescriptor.hGlobal);
+
+	LARGE_INTEGER pos = { 0, 0 };
+	const int cntBuffer = 1024;
+	BYTE buffer[cntBuffer];
+	ULONG read;
+	result = stgFileContents.pstm->Seek(pos, STREAM_SEEK_SET, NULL);
+	result = stgFileContents.pstm->Read(buffer, cntBuffer, &read);
+
+	GlobalUnlock(stgFileDescriptor.hGlobal);
+	OleUninitialize();
 }
 
 // http://netez.com/2xExplorer/shellFAQ/adv_clip.html
 void olePaste()
 {
 	HRESULT result;
-	//result = OleInitialize(NULL);
+	result = OleInitialize(NULL);
 	wprintf(L"\nFormats needed:\n");
 	UINT ufileDesc = RegisterClipboardFormat(
 		CFSTR_FILEDESCRIPTOR
