@@ -227,14 +227,14 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 			clFileContents,
 			NULL,
 			DVASPECT_CONTENT,
-			-1,
+			i, // index of the desired file
 			TYMED_ISTREAM
 		};
 		STGMEDIUM mediumFile;
 		result = dataObject->GetData(&formatFileContents, &mediumFile);
 		void * p = mediumFile.pstm;
 
-		BYTE* pBuf = new BYTE[ISTREAM_BUF_SIZE]; // 1 MB
+		BYTE* pBuf = new BYTE[ISTREAM_BUF_SIZE];
 		ULONG read;
 		result = mediumFile.pstm->Seek({0}, STREAM_SEEK_SET, NULL);
 		do
