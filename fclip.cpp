@@ -10,8 +10,6 @@ void olePaste2();
 // usage: fclip [-v|[file1 [file2 [...]]]]
 int run(int argc, TCHAR* argv[])
 {
-	HRESULT result = CoInitializeEx(NULL, COINIT_MULTITHREADED | COINIT_DISABLE_OLE1DDE);
-
 	// parse command line parameter
 	if (argc == 2 && !_tcscmp(argv[1], _T("-v")))
 		paste();
@@ -69,11 +67,11 @@ int copy(int argc, TCHAR* argv[])
 
 void paste()
 {
-	if (IsClipboardFormatAvailable(CF_HDROP))
-	{
-		pasteByHdrop();
-		return;
-	}
+//	if (IsClipboardFormatAvailable(CF_HDROP))
+//	{
+//		pasteByHdrop();
+//		return;
+//	}
 	UINT formatFileDescriptor = RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
 	UINT formatFileContents   = RegisterClipboardFormat(CFSTR_FILECONTENTS);
 	if (IsClipboardFormatAvailable(formatFileDescriptor)
@@ -199,7 +197,7 @@ void olePaste2()
 void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 {
 	HRESULT result;
-//	result = OleInitialize(NULL);
+	result = OleInitialize(NULL);
 	IDataObject* dataObject;
 	result = OleGetClipboard(&dataObject);
 	FORMATETC formatDescriptor{

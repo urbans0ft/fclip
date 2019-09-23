@@ -19,6 +19,7 @@
 #endif
 #define _tcscpy strcpy
 #define _tcslen strlen
+#define _tcscmp strcmp
 #define _tmain main
 #endif
 
