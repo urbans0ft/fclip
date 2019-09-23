@@ -50,11 +50,11 @@ x86_64-w64-mingw32-g++ -s -DUNICODE -D_UNICODE -o fclip -static fclip.cpp pch.cp
 ```
 ~~**None UNICODE 32bit**~~
 ```
-i686-w64-mingw32-g++ -o fclip -static fclip.cpp
+i686-w64-mingw32-g++ -s -o fclip -static fclip.cpp pch.cpp
 ```
 ~~**None UNICODE 64bit**~~
 ```
-x86_64-w64-mingw32-g++ -o fclip -static fclip.cpp
+x86_64-w64-mingw32-g++ -s -o fclip -static fclip.cpp pch.cpp
 ```
 
 ## g++ under Cygwin
