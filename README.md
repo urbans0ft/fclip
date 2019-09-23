@@ -5,6 +5,10 @@ In reference to the windows `clip` the `fclip` command copies files to the windo
 
     fclip [-v | file1 [file2 [... [fileN]]]]
 
+If you'd like a stable version use the [release](https://github.com/urbans0ft/fclip/releases)
+provided. Currently the Initial Release does not support the `-v` option.
+
+
 ## Copying
 
     fclip.exe "C:\full\path\to\file.dat" "another_file.dat"
