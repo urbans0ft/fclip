@@ -44,11 +44,11 @@ i686-w64-mingw32-g++ -s -DUNICODE -D_UNICODE -o fclip -static fclip.cpp pch.cpp 
 ```
 x86_64-w64-mingw32-g++ -s -DUNICODE -D_UNICODE -o fclip -static fclip.cpp pch.cpp -lOle32 -lShlwapi
 ```
-**None UNICODE 32bit**
+~~**None UNICODE 32bit**~~
 ```
 i686-w64-mingw32-g++ -o fclip -static fclip.cpp
 ```
-**None UNICODE 64bit**
+~~**None UNICODE 64bit**~~
 ```
 x86_64-w64-mingw32-g++ -o fclip -static fclip.cpp
 ```
