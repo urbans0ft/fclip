@@ -109,7 +109,7 @@ void pasteByHdrop()
 		_tcscpy(newFiles[i], oldFiles[i]);
 		PathStripPath(newFiles[i]);
 		startFiles += fileNameLength;
-		_tprintf(_T("copy %ls %ls\n"), oldFiles[i], newFiles[i]);
+		_tprintf(_T("copy %s %s\n"), oldFiles[i], newFiles[i]);
 		CopyFile(oldFiles[i], newFiles[i], FALSE);
 	}
 	
@@ -136,7 +136,7 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 	for (int i = 0; i < pFileGrpDescriptor->cItems; i++)
 	{
 		const FILEDESCRIPTOR& fDescriptor = pFileGrpDescriptor->fgd[i];
-		_tprintf(_T("File in group descriptor: %ls\n"), fDescriptor.cFileName);
+		_tprintf(_T("copy %s\n"), fDescriptor.cFileName);
 		HANDLE hFile = CreateFile(
 			fDescriptor.cFileName,
 			GENERIC_WRITE,
