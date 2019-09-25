@@ -17,10 +17,11 @@
 #error UNICODE is not supported for GCC under Cygwin. \
        Use MinGW GCC instead.
 #endif
-#define _tcscpy strcpy
-#define _tcslen strlen
-#define _tcscmp strcmp
-#define _tmain main
+#define _tcscpy  strcpy
+#define _tcslen  strlen
+#define _tcscmp  strcmp
+#define _tprintf printf
+#define _tmain   main
 #endif
 
 #if defined(__MINGW32__) && defined(_UNICODE)

@@ -67,8 +67,15 @@ void paste()
 //		pasteByHdrop();
 //		return;
 //	}
+	_tprintf(_T("RegisterClipboardFormat(%s)\n"), CFSTR_FILEDESCRIPTOR);
+	//_tprintf(_T("RegisterClipboardFormat(%ls)\n"), CFSTR_FILECONTENTS);
 	UINT formatFileDescriptor = RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
 	UINT formatFileContents   = RegisterClipboardFormat(CFSTR_FILECONTENTS);
+	_tprintf(_T("Format File Descriptor                           %u\n"), formatFileDescriptor);
+	_tprintf(_T("Format File Contents                             %u\n"), formatFileContents);
+	_tprintf(_T("IsClipboardFormatAvailable(formatFileDescriptor) %u\n"), IsClipboardFormatAvailable(formatFileDescriptor));
+	_tprintf(_T("IsClipboardFormatAvailable(formatFileContents)   %u\n"), IsClipboardFormatAvailable(formatFileContents));
+	_tprintf(_T("IsClipboardFormatAvailable(CF_HDROP)             %u\n"), IsClipboardFormatAvailable(CF_HDROP));
 	if (IsClipboardFormatAvailable(formatFileDescriptor)
 		&& IsClipboardFormatAvailable(formatFileContents))
 	{
