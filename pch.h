@@ -31,6 +31,26 @@
 // 1 MB
 #define ISTREAM_BUF_SIZE 1048576 // Byte
 
+typedef HANDLE (__stdcall * CreateFileAFunc)(
+  LPCSTR               ,
+  DWORD                ,
+  DWORD                ,
+  LPSECURITY_ATTRIBUTES,
+  DWORD                ,
+  DWORD                ,
+  HANDLE
+);
+
+typedef HANDLE (__stdcall * CreateFileWFunc)(
+  LPCWSTR              ,
+  DWORD                ,
+  DWORD                ,
+  LPSECURITY_ATTRIBUTES,
+  DWORD                ,
+  DWORD                ,
+  HANDLE
+);
+
 // New entry point, instead of main().
 int run(int argc, TCHAR* argv[]);
 

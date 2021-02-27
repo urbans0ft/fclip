@@ -3,11 +3,14 @@
 int copy(int argc, TCHAR* argv[]);
 void paste();
 void pasteByHdrop();
-void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents);
+template<class T, class U, class V>
+void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents, V createFileFunc);
+void printClipboardFormats();
 
 // usage: fclip [-v|[file1 [file2 [...]]]]
 int run(int argc, TCHAR* argv[])
 {
+	printClipboardFormats();
 	// parse command line parameter
 	if (argc == 2 && !_tcscmp(argv[1], _T("-v")))
 		paste();
@@ -43,7 +46,7 @@ int copy(int argc, TCHAR* argv[])
 	df->fWide = TRUE; // unicode file names
 #endif // _UNICODE
 
-					  // copy the command line args to the allocated memory
+	// copy the command line args to the allocated memory
 	TCHAR* dstStart = (TCHAR*)&df[1];
 	for (int i = 0; i < argc - 1; i++)
 	{
@@ -68,19 +71,30 @@ void paste()
 //		return;
 //	}
 	_tprintf(_T("RegisterClipboardFormat(%s)\n"), CFSTR_FILEDESCRIPTOR);
-	//_tprintf(_T("RegisterClipboardFormat(%ls)\n"), CFSTR_FILECONTENTS);
-	UINT formatFileDescriptor = RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
-	UINT formatFileContents   = RegisterClipboardFormat(CFSTR_FILECONTENTS);
-	_tprintf(_T("Format File Descriptor                           %u\n"), formatFileDescriptor);
-	_tprintf(_T("Format File Contents                             %u\n"), formatFileContents);
-	_tprintf(_T("IsClipboardFormatAvailable(formatFileDescriptor) %u\n"), IsClipboardFormatAvailable(formatFileDescriptor));
-	_tprintf(_T("IsClipboardFormatAvailable(formatFileContents)   %u\n"), IsClipboardFormatAvailable(formatFileContents));
-	_tprintf(_T("IsClipboardFormatAvailable(CF_HDROP)             %u\n"), IsClipboardFormatAvailable(CF_HDROP));
-	if (IsClipboardFormatAvailable(formatFileDescriptor)
-		&& IsClipboardFormatAvailable(formatFileContents))
+	_tprintf(_T("RegisterClipboardFormat(%s)\n"), CFSTR_FILECONTENTS);
+	UINT formatFileDescriptor  = RegisterClipboardFormat(_T("FileGroupDescriptor"));
+	UINT formatFileDescriptorW = RegisterClipboardFormat(_T("FileGroupDescriptorW"));
+	UINT formatFileContents    = RegisterClipboardFormat(CFSTR_FILECONTENTS);
+	_tprintf(_T("Format File Descriptor                            %u\n"), formatFileDescriptor);
+	_tprintf(_T("Format File Contents                              %u\n"), formatFileContents);
+	_tprintf(_T("IsClipboardFormatAvailable(formatFileDescriptor)  %u\n"), IsClipboardFormatAvailable(formatFileDescriptor));
+	_tprintf(_T("IsClipboardFormatAvailable(formatFileDescriptorW) %u\n"), IsClipboardFormatAvailable(formatFileDescriptorW));
+	_tprintf(_T("IsClipboardFormatAvailable(formatFileContents)    %u\n"), IsClipboardFormatAvailable(formatFileContents));
+	_tprintf(_T("IsClipboardFormatAvailable(CF_HDROP)              %u\n"), IsClipboardFormatAvailable(CF_HDROP));
+	if (IsClipboardFormatAvailable(formatFileContents))
 	{
-		pasteByFileContents(formatFileDescriptor, formatFileContents);
-		return;
+		if (IsClipboardFormatAvailable(formatFileDescriptor))
+		{
+			_tprintf(_T("Paste with ansi group descriptor!\n"));
+			pasteByFileContents<FILEGROUPDESCRIPTORA, FILEDESCRIPTORA, CreateFileAFunc>(formatFileDescriptor, formatFileContents, CreateFileA);
+			return;
+		}
+		if (IsClipboardFormatAvailable(formatFileDescriptorW))
+		{
+			_tprintf(_T("Paste with unicode group descriptor!\n"));
+			pasteByFileContents<FILEGROUPDESCRIPTORW, FILEDESCRIPTORW, CreateFileWFunc>(formatFileDescriptorW, formatFileContents, CreateFileW);
+			return;
+		}
 	}
 	_tprintf(_T("Nothing to paste!\n"));
 }
@@ -123,7 +137,8 @@ void pasteByHdrop()
 	int lala = 0;
 }
 
-void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
+template<class T, class U, class V>
+void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents, V createFileFunc)
 {
 	HRESULT result;
 	result = OleInitialize(NULL);
@@ -138,13 +153,13 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 	};
 	STGMEDIUM mediumDescriptor;
 	result = dataObject->GetData(&formatDescriptor, &mediumDescriptor);
-	FILEGROUPDESCRIPTOR* pFileGrpDescriptor = 
-		(FILEGROUPDESCRIPTOR*)GlobalLock(mediumDescriptor.hGlobal);
+	T* pFileGrpDescriptor = 
+		(T*)GlobalLock(mediumDescriptor.hGlobal);
 	for (int i = 0; i < pFileGrpDescriptor->cItems; i++)
 	{
-		const FILEDESCRIPTOR& fDescriptor = pFileGrpDescriptor->fgd[i];
+		const U& fDescriptor = pFileGrpDescriptor->fgd[i];
 		_tprintf(_T("copy %s\n"), fDescriptor.cFileName);
-		HANDLE hFile = CreateFile(
+		HANDLE hFile = createFileFunc(
 			fDescriptor.cFileName,
 			GENERIC_WRITE,
 			0,
@@ -181,4 +196,21 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 		} while (read == ISTREAM_BUF_SIZE);
 		CloseHandle(hFile);
 	}
+}
+
+void printClipboardFormats()
+{
+	OpenClipboard(NULL);
+	TCHAR formatName[256];
+	UINT currentFormat = 0;
+	while (currentFormat = EnumClipboardFormats(currentFormat))
+	{
+		GetClipboardFormatName(
+			currentFormat,
+			formatName,
+			sizeof(formatName)
+		);
+		_tprintf(_T("%u: %s\n"), currentFormat, formatName);
+	}
+	CloseClipboard();
 }
