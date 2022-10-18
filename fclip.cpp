@@ -25,7 +25,7 @@ int main(int argc, char** /*argv*/)
 
 int copy(int argc, wchar_t* argv[])
 {
-	DBGPRINT(L"Copy file(s) to clipboard (count: %d)", argc);
+	DBGPRINT(L"Copy file(s) to clipboard (count: %d)", argc-1);
 	// create / fill full file path buffer and calculate global buffer
 	wchar_t** files = new wchar_t*[argc - 1];
 	DWORD*  bufSizes = new DWORD[argc - 1];
@@ -33,21 +33,25 @@ int copy(int argc, wchar_t* argv[])
 
 	for (int i = 1; i < argc; i++) {
 		bufSizes[i - 1] = GetFullPathName(argv[i], 0, NULL, NULL);
+		DBGPRINT(L"Buffer size for '%S' == %d", argv[i], bufSizes[i - 1]);
 		files[i - 1] = new wchar_t[bufSizes[i - 1]];
 		GetFullPathName(argv[i], bufSizes[i - 1], files[i - 1], NULL);
 		if (GetFileAttributes(files[i - 1]) == INVALID_FILE_ATTRIBUTES)
 			return INVALID_FILE_ATTRIBUTES;
 		// calculate *bytes* needed for memory allocation
 		clpSize += sizeof(wchar_t) * (bufSizes[i - 1]);
+		DBGPRINT(L"Added '%S' to buffer.", files[i - 1]);
 	}
 	clpSize += sizeof(wchar_t); // two \0 needed at the end
 
+	DBGPRINT(L"Alloc global memory %d", clpSize);
 							  // allocate the zero initialized memory
 	HDROP hdrop = (HDROP)GlobalAlloc(GHND, clpSize);
 	DROPFILES* df = (DROPFILES*)GlobalLock(hdrop);
 	df->pFiles = sizeof(DROPFILES); // string offset
 	df->fWide = TRUE; // unicode file names
 
+	DBGPRINT(L"Copy filename(s) to global memory.");
 					  // copy the command line args to the allocated memory
 	wchar_t* dstStart = (wchar_t*)&df[1];
 	for (int i = 0; i < argc - 1; i++)
@@ -58,10 +62,12 @@ int copy(int argc, wchar_t* argv[])
 	GlobalUnlock(hdrop);
 
 	// prepare the clipboard
+	DBGPRINT(L"Set clipboard data (CF_HDROP).");
 	OpenClipboard(NULL);
 	EmptyClipboard();
 	SetClipboardData(CF_HDROP, hdrop);
 	CloseClipboard();
+	DBGPRINT(L"Clibpoard data set!");
 	return 0;
 }
 
