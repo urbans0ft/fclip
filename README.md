@@ -65,8 +65,9 @@ there's no need to (re-)run it again. Instead the project may be (re-)compiled a
 
 ```
 ..\fclip\build>cmake --build .
-Consolidate compiler generated dependencies of target fclip
-[ 33%] Linking CXX executable fclip.exe
+[ 33%] Building CXX object CMakeFiles/fclip.dir/fclip.cpp.obj
+[ 66%] Building CXX object CMakeFiles/fclip.dir/pch.cpp.obj
+[100%] Linking CXX executable fclip.exe
 [100%] Built target fclip
 ```
 
