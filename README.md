@@ -32,6 +32,44 @@ the current location. It simulates pressing `ctrl + v`.
 
 # Compilation
 
+## CMake
+
+Example configuration and compilation assuming `g++` (MinGW-w64) is installed.
+
+### Configuration
+
+```
+..\fclip>mkdir build && cd build
+..\fclip\build>cmake -G "MinGW Makefiles" ..\
+-- The C compiler identification is GNU 12.2.0
+-- The CXX compiler identification is GNU 12.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/mingw64/bin/gcc.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/mingw64/bin/g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/fclip/build
+```
+
+### Compilation
+
+After the successfull configuration the project may be compiled. If no changes to the CMake configuration files are made
+there's no need to (re-)run it again. Instead the project may be (re-)compiled any time.
+
+```
+..\fclip\build>cmake --build .
+Consolidate compiler generated dependencies of target fclip
+[ 33%] Linking CXX executable fclip.exe
+[100%] Built target fclip
+```
+
 ## Visual Studio
 
 Create a Visual C++ Console Project, add the fclip.ccp (delete the other predefined main source code file) and compile, that's it!
