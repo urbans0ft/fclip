@@ -8,7 +8,7 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 // usage: fclip [-v|[file1 [file2 [...]]]]
 int main(int argc, char** /*argv*/)
 {
-	DBGPRINT(L"%S", VERSION);
+	DBGPRINT(L"%S %s", VERSION, __DATE__ " " __TIME__);
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLine(), &argc);
 	if (argc == 1) {
 		std::wcout << argv[0] << L" Version " << VERSION << std::endl;
