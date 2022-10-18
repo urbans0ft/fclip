@@ -8,6 +8,10 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 // usage: fclip [-v|[file1 [file2 [...]]]]
 int run(int argc, TCHAR* argv[])
 {
+	if (argc == 1) {
+		std::wcout << argv[0] << L" Version " << VERSION << std::endl;
+		return 0;
+	}
 	// parse command line parameter
 	if (argc == 2 && !_tcscmp(argv[1], _T("-v")))
 		paste();
