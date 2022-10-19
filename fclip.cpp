@@ -18,14 +18,13 @@ int main(int argc, char** /*argv*/)
 	if (argc == 2 && !wcscmp(argv[1], L"-v"))
 		paste();
 	else
-		copy(argc, argv);
-
-    return 0;
+		return copy(argc, argv);
+	return 0;
 }
 
 int copy(int argc, wchar_t* argv[])
 {
-	DBGPRINT(L"Copy file(s) to clipboard (count: %d)", argc-1);
+	DBGPRINT(L"Copy file(s) to clipboard (count: %d).", argc - 1);
 	// create / fill full file path buffer and calculate global buffer
 	wchar_t** files = new wchar_t*[argc - 1];
 	DWORD*  bufSizes = new DWORD[argc - 1];
@@ -77,6 +76,7 @@ int copy(int argc, wchar_t* argv[])
 
 void paste()
 {
+	DBGPRINT(L"Check if files need to be pasted.");
 //	if (IsClipboardFormatAvailable(CF_HDROP))
 //	{
 //		pasteByHdrop();
@@ -90,7 +90,7 @@ void paste()
 		pasteByFileContents(formatFileDescriptor, formatFileContents);
 		return;
 	}
-	wprintf(L"Nothing to paste!\n");
+	DBGPRINT(L"Nothing to paste.");
 }
 
 void pasteByHdrop()
@@ -148,10 +148,11 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 	result = dataObject->GetData(&formatDescriptor, &mediumDescriptor);
 	FILEGROUPDESCRIPTOR* pFileGrpDescriptor = 
 		(FILEGROUPDESCRIPTOR*)GlobalLock(mediumDescriptor.hGlobal);
+	DBGPRINT(L"Paste file(s) from clipboard (count: %d).", pFileGrpDescriptor->cItems);
 	for (int i = 0; i < pFileGrpDescriptor->cItems; i++)
 	{
 		const FILEDESCRIPTOR& fDescriptor = pFileGrpDescriptor->fgd[i];
-		wprintf(L"File in group descriptor: %ls\n", fDescriptor.cFileName);
+		DBGPRINT(L"File in group descriptor: %ls\n", fDescriptor.cFileName);
 		HANDLE hFile = CreateFile(
 			fDescriptor.cFileName,
 			GENERIC_WRITE,
