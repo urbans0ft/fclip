@@ -109,7 +109,7 @@ After the successfull configuration the project may be compiled. If no changes t
 there's no need to (re-)run it again. Instead the project may be (re-)compiled any time.
 
 ```
-..\fclip>>cmake --build bin\debug
+..\fclip>cmake --build bin\debug
 [ 33%] Building CXX object CMakeFiles/fclip.dir/fclip.cpp.obj
 [ 66%] Building CXX object CMakeFiles/fclip.dir/pch.cpp.obj
 [100%] Linking CXX executable fclip.exe
