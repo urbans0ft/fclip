@@ -7,7 +7,11 @@ project(${TARGET} VERSION 2.0.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_compile_definitions(UNICODE _UNICODE DEBUG)
+add_compile_definitions(
+	UNICODE
+	_UNICODE
+	$<$<CONFIG:DEBUG>:DEBUG>
+)
 
 if (MSVC)
     # warning level 4 and all warnings as errors

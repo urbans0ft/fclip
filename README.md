@@ -38,9 +38,10 @@ Example configuration and compilation assuming `g++` (MinGW-w64) is installed.
 
 ### Configuration
 
+Generating the debug configuration:
+
 ```
-..\fclip>mkdir build && cd build
-..\fclip\build>cmake -G "MinGW Makefiles" ..\
+..\fclip>cmake -G "MinGW Makefiles" -S . -B .\bin\debug\ -DCMAKE_BUILD_TYPE=Debug
 -- The C compiler identification is GNU 12.2.0
 -- The CXX compiler identification is GNU 12.2.0
 -- Detecting C compiler ABI info
@@ -55,7 +56,17 @@ Example configuration and compilation assuming `g++` (MinGW-w64) is installed.
 -- Detecting CXX compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: C:/fclip/build
+```
+
+Generating the release configuration: 
+
+```
+..\fclip>cmake -G "MinGW Makefiles" -S . -B .\bin\release\ -DCMAKE_BUILD_TYPE=Release
+-- The C compiler identification is GNU 12.2.0
+-- The CXX compiler identification is GNU 12.2.0
+...
+-- Configuring done
+-- Generating done
 ```
 
 ### Compilation
@@ -64,42 +75,26 @@ After the successfull configuration the project may be compiled. If no changes t
 there's no need to (re-)run it again. Instead the project may be (re-)compiled any time.
 
 ```
-..\fclip\build>cmake --build .
+..\fclip>>cmake --build bin\debug
+[ 33%] Building CXX object CMakeFiles/fclip.dir/fclip.cpp.obj
+[ 66%] Building CXX object CMakeFiles/fclip.dir/pch.cpp.obj
+[100%] Linking CXX executable fclip.exe
+[100%] Built target fclip
+```
+```
+..\fclip>cmake --build bin\release
 [ 33%] Building CXX object CMakeFiles/fclip.dir/fclip.cpp.obj
 [ 66%] Building CXX object CMakeFiles/fclip.dir/pch.cpp.obj
 [100%] Linking CXX executable fclip.exe
 [100%] Built target fclip
 ```
 
-## Visual Studio
+## Manual
 
-Create a Visual C++ Console Project, add the fclip.ccp (delete the other predefined main source code file) and compile, that's it!
+With MinGW-w64 installed you may compile the application via command line:
 
-## MinGW
-
-You need to have the [MinGW Compiler Collection (GCC)](https://osdn.net/projects/mingw/releases/). I prefer using [Cygwin](https://cygwin.com/) and install MinGW from the available packages.
-
-**UNICODE 32bit**
 ```
-i686-w64-mingw32-g++ -s -DUNICODE -D_UNICODE -o fclip -static fclip.cpp pch.cpp -lOle32 -lShlwapi
-```
-**UNICODE 64bit**
-```
-x86_64-w64-mingw32-g++ -s -DUNICODE -D_UNICODE -o fclip -static fclip.cpp pch.cpp -lOle32 -lShlwapi
-```
-~~**None UNICODE 32bit**~~
-```
-i686-w64-mingw32-g++ -s -o fclip -static fclip.cpp pch.cpp
-```
-~~**None UNICODE 64bit**~~
-```
-x86_64-w64-mingw32-g++ -s -o fclip -static fclip.cpp pch.cpp
-```
-
-## g++ under Cygwin
-**Attention:** The g++ compiler from the GCC under Cygwin does **not** support Unicode encoding.
-```
-g++ -s -o fclip.exe fclip.cpp pch.cpp -lOle32 -lShlwapi
+g++ -s -DUNICODE -D_UNICODE -o fclip -static fclip.cpp pch.cpp -lOle32 -lShlwapi
 ```
 
 # References
