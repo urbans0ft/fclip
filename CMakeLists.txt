@@ -27,5 +27,6 @@ add_executable(${TARGET} fclip.cpp pch.cpp)
 configure_file(pch.h.in pch.h)
 target_include_directories(${TARGET} PUBLIC "${PROJECT_BINARY_DIR}")
 
+target_link_libraries(${TARGET} -static)
 target_link_libraries(${TARGET} Ole32)
 target_link_libraries(${TARGET} Shlwapi)
