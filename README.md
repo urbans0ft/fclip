@@ -1,24 +1,48 @@
-# fclip
+# fclip v2.0
+
 In reference to the windows `clip` the `fclip` command copies files to the windows clipboard or pastes them from it.
+
+**Major Changes since v2.0**
+
+- UNICODE-only support:
+
+	> Windows natively supports Unicode strings for UI elements, file names,
+	  and so forth. Unicode is the preferred character encoding, because it
+	  supports all character sets and languages. Windows represents Unicode
+	  characters using UTF-16 encoding, in which each character is encoded as
+	  one or two 16-bit values.
+	
+	_&mdash;[microsoft.com](https://learn.microsoft.com/en-us/windows/win32/learnwin32/working-with-strings)_
+
+- 64-bit only (since its 2022)
+- CMake build system
 
 # Usage
 
     fclip [-v | file1 [file2 [... [fileN]]]]
 
 If you'd like a stable version use the [release](https://github.com/urbans0ft/fclip/releases)
-provided. Currently the Initial Release does not support the `-v` option.
-
+provided.
 
 ## Copying
 
-    fclip.exe "C:\full\path\to\file.dat" "another_file.dat"
+**Example:**
 
-`fclip` now supports relative paths as well. Moreover the path existence is
+```
+>fclip file1.dat ..\file2.dat "C:\long folder\file3.dat" "C:\file4.dat"
+```
+
+`fclip` supports relative and absolute paths. Moreover the path existence is
 checked before modifying the clipboard data. If a path does not exist `fclip`
-returns `INVALID_FILE_ATTRIBUTES` wich is equivalent to 127.
+returns `INVALID_FILE_ATTRIBUTES` wich is equivalent to -1.
 
+```
+>fclip file-does-not-exist.dat
+>echo %ERRORLEVEL%
+-1
+```
 
-That's it! Feel free to press `ctrl + v` to paste the files.
+Press `ctrl + v` to paste the files.
 
 ## Pasting
 
@@ -27,8 +51,18 @@ That's it! Feel free to press `ctrl + v` to paste the files.
 `fclip -v` checks if the clipboard contains a file reference and pastes it to
 the current location. It simulates pressing `ctrl + v`.
 
-**Warning:**  
-`ctrl + v` is currently not working within the Cygwin compilation.
+# Changes
+
+- v2.0.0
+	- Bug(s):
+		- support of relative file names (..\..\file.dat)
+		- return value on copy failure (-1)
+	- Change(s):
+		- Removed non UNICODE support
+		- cmake version control
+		- fclip version info
+	- Develop:
+		- Increased verbosity
 
 # Compilation
 
