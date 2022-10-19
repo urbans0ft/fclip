@@ -35,7 +35,11 @@ int copy(int argc, wchar_t* argv[])
 		bufSizes[i - 1] = GetFullPathName(argv[i], 0, NULL, NULL);
 		DBGPRINT(L"Buffer size for '%S' == %d", argv[i], bufSizes[i - 1]);
 		files[i - 1] = new wchar_t[bufSizes[i - 1]];
-		GetFullPathName(argv[i], bufSizes[i - 1], files[i - 1], NULL);
+		// (re-)setting bufSize because calculation of relative paths (containing '..\')
+		// migth be to long. The actual setting of the variable is done by eleminating relative
+		// path elements (e.g.: ..\..\file.dat might become C:\file.dat).
+		bufSizes[i - 1] = GetFullPathName(argv[i], bufSizes[i - 1], files[i - 1], NULL) + 1; // +1 => \0
+		DBGPRINT(L"(Re-)setting buffer size to %d", bufSizes[i - 1]);
 		if (GetFileAttributes(files[i - 1]) == INVALID_FILE_ATTRIBUTES)
 			return INVALID_FILE_ATTRIBUTES;
 		// calculate *bytes* needed for memory allocation
