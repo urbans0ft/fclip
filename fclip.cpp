@@ -2,7 +2,6 @@
 
 int copy(int argc, wchar_t* argv[]);
 void paste();
-void pasteByHdrop();
 void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents);
 
 // usage: fclip [-v|[file1 [file2 [...]]]]
@@ -91,44 +90,6 @@ void paste()
 		return;
 	}
 	DBGPRINT(L"Nothing to paste.");
-}
-
-void pasteByHdrop()
-{
-	OpenClipboard(NULL);
-
-	HANDLE hHdrop = GetClipboardData(CF_HDROP);
-	DROPFILES* df = (DROPFILES*)GlobalLock(hHdrop);
-	GlobalUnlock(hHdrop);
-
-	CloseClipboard();
-
-	wchar_t* startFiles;
-	int    fileCount = 0;
-	
-	startFiles = (wchar_t*)&df[1];
-	while (startFiles[0] != '\0')
-	{
-		fileCount++;
-		startFiles += _tcslen(startFiles) + 1; // get beyond \0
-	}	
-	wchar_t** oldFiles = new wchar_t*[fileCount];
-	wchar_t** newFiles = new wchar_t*[fileCount];
-
-	startFiles = (wchar_t*)&df[1];
-	for (int i = 0; i < fileCount; i++)
-	{
-		int fileNameLength = _tcslen(startFiles) + 1; // + 1 => \0
-		oldFiles[i] = startFiles;
-		newFiles[i] = new wchar_t[fileNameLength];
-		wcscpy(newFiles[i], oldFiles[i]);
-		PathStripPath(newFiles[i]);
-		startFiles += fileNameLength;
-		wprintf(L"copy %ls %ls\n", oldFiles[i], newFiles[i]);
-		CopyFile(oldFiles[i], newFiles[i], FALSE);
-	}
-	
-	int lala = 0;
 }
 
 void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
