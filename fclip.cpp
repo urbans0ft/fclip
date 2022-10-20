@@ -76,11 +76,6 @@ int copy(int argc, wchar_t* argv[])
 void paste()
 {
 	DBGPRINT(L"Check if files need to be pasted.");
-//	if (IsClipboardFormatAvailable(CF_HDROP))
-//	{
-//		pasteByHdrop();
-//		return;
-//	}
 	UINT formatFileDescriptor = RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
 	UINT formatFileContents   = RegisterClipboardFormat(CFSTR_FILECONTENTS);
 	if (IsClipboardFormatAvailable(formatFileDescriptor)

@@ -2,36 +2,21 @@
 #define PCH_H
 
 // TODO: add headers that you want to pre-compile here
+#include <iostream>
+
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <Shlobj.h>   // DROPFILES
-#include <ShellApi.h> // HDROP
-#include <tchar.h>    // e.g. _tcslen
-#include <Shlwapi.h>  // PathStripPath
-// debug
-#include <iostream>
-#include <string>
+#include <ShellApi.h> // CommandLineToArgvW()
 
 #define VERSION L"@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
 
-#define STR_HELPER(x) L ## x
-#define STR(x) STR_HELPER(x)
-
-#define WFILE STR(MAJOR) "." STR(MINOR) "." STR(PATCH)
-
 #ifdef DEBUG
-
-//#include <cstdio>
-
 #define DBGPRINT(_fmt, ...)  wprintf(L"DEBUG [%s:%d@%s] " _fmt L"\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
-
 #else // DEBUG
-
 #define DBGPRINT(_fmt, ...)
-
 #endif // DEBUG
 
-// 1 MB
-#define ISTREAM_BUF_SIZE 1048576 // Byte
+#define ISTREAM_BUF_SIZE 1048576 // Byte => 1024 KB => 1 MB
 
 #endif //PCH_H
