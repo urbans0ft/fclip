@@ -2,6 +2,8 @@
 
 In reference to the windows `clip` the `fclip` command copies files to the windows clipboard or pastes them from it.
 
+![fclip demo](fclip-demo.gif)
+
 **Major Changes since v2.0**
 
 - UNICODE-only support:
