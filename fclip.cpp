@@ -89,7 +89,7 @@ void paste()
 
 void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 {
-	HRESULT result;
+	UNUSED(HRESULT result);
 	result = OleInitialize(NULL);
 	IDataObject* dataObject;
 	result = OleGetClipboard(&dataObject);
@@ -105,7 +105,7 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 	FILEGROUPDESCRIPTOR* pFileGrpDescriptor = 
 		(FILEGROUPDESCRIPTOR*)GlobalLock(mediumDescriptor.hGlobal);
 	DBGPRINT(L"Paste file(s) from clipboard (count: %d).", pFileGrpDescriptor->cItems);
-	for (int i = 0; i < pFileGrpDescriptor->cItems; i++)
+	for (UINT i = 0; i < pFileGrpDescriptor->cItems; i++)
 	{
 		const FILEDESCRIPTOR& fDescriptor = pFileGrpDescriptor->fgd[i];
 		DBGPRINT(L"File in group descriptor: %ls\n", fDescriptor.cFileName);
@@ -122,16 +122,15 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 			clFileContents,
 			NULL,
 			DVASPECT_CONTENT,
-			i, // index of the desired file
+			(LONG)i, // index of the desired file
 			TYMED_ISTREAM
 		};
 		STGMEDIUM mediumFile;
 		result = dataObject->GetData(&formatFileContents, &mediumFile);
-		void * p = mediumFile.pstm;
 
 		BYTE* pBuf = new BYTE[ISTREAM_BUF_SIZE];
 		ULONG read;
-		result = mediumFile.pstm->Seek({0}, STREAM_SEEK_SET, NULL);
+		result = mediumFile.pstm->Seek({}, STREAM_SEEK_SET, NULL);
 		do
 		{
 			DWORD written;
