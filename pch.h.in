@@ -7,6 +7,8 @@
  * 
  * @copyright Copyright (c) 2022
  * 
+ * This file gets transformed by CMake to become pch.h eventually.
+ * 
  */
 #ifndef PCH_H
 #define PCH_H
