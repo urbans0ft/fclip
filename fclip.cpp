@@ -1,10 +1,46 @@
+/**
+ * @file fclip.cpp
+ * @author Nico V. Urbanczyk (nico@urbansoft.eu)
+ * @brief Complete source code with all functionality.
+ * @version 0.1
+ * @date 2022-10-21
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include "pch.h" // Pre-compiled header
 
+/**
+ * @brief Copy the files specified by the command line to the clipboard.
+ * 
+ * @param argc The command line argument count
+ * @param argv The command line arguments
+ * @return int `0` indicates success `INVALID_FILE_ATTRIBUTES` (`-1`) failure.
+ */
 int copy(int argc, wchar_t* argv[]);
+/**
+ * @brief paste files
+ * 
+ * The function checks if there are files present on the clipboard. If so
+ * it calls pasteByFileContents()
+ */
 void paste();
+/**
+ * @brief paste file from the clipboard
+ * 
+ * This function gets called by paste() do not use it directly.
+ * 
+ * @param clFileDescriptor The clipboard format used with the CFSTR_FILECONTENTS format to transfer data as a group of files.
+ * @param clFileContents   The clipboard format used with the CFSTR_FILEDESCRIPTOR format to transfer data as if it were a file, regardless of how it is actually stored.
+ */
 void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents);
 
-// usage: fclip [-v|[file1 [file2 [...]]]]
+/**
+ * @brief The main entry point
+ * 
+ * @param argc The command line argument count
+ * 
+ */
 int main(int argc, char** /*argv*/)
 {
 	DBGPRINT(L"%S %s", VERSION, __DATE__ " " __TIME__);
