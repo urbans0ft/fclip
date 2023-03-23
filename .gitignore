@@ -3,5 +3,6 @@
 # ... but these:
 !.gitignore
 
-# ignore build
+# ignore build (binaries, documentation)
 bin/
+html/

@@ -57,7 +57,7 @@ the current location. It simulates pressing `ctrl + v`.
 
 - v2.0.0
 	- Bug(s):
-		- support of relative file names (..\..\file.dat)
+		- support of relative file names (..\\..\\file.dat)
 		- return value on copy failure (-1)
 	- Change(s):
 		- Removed non UNICODE support
