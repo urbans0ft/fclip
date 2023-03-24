@@ -25,6 +25,7 @@
         },
         {
             "name": "release",
+            "inherits": "default",
             "displayName": "Release Configuration",
             "description": "Configure release configuration using 'MinGW Makefiles'",
             "binaryDir": "${sourceDir}/bin/release",
@@ -35,8 +36,12 @@
     ],
     "buildPresets": [
         {
-            "name": "default",
-            "configurePreset": "default"
+            "name": "debug",
+            "configurePreset": "debug"
+        },
+        {
+            "name": "release",
+            "configurePreset": "release"
         }
     ]
 }
