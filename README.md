@@ -66,7 +66,27 @@ the current location. It simulates pressing `ctrl + v`.
 	- Develop:
 		- Increased verbosity
 
-# Compilation
+# Building
+
+## Prerequisites
+
+- cmake
+- gcc (MinGW-w64)
+
+Building it known to work with:
+
+```
+> cmake --version
+cmake version 3.26.1
+
+> g++ --version
+g++.exe (x86_64-win32-seh-rev2, Built by MinGW-W64 project) 12.2.0
+
+> systeminfo
+
+OS Name:                   Microsoft Windows 10 Enterprise
+OS Version:                10.0.19041 N/A Build 19041
+```
 
 ## CMake
 
@@ -135,3 +155,5 @@ g++ -s -DUNICODE -D_UNICODE -o fclip -static fclip.cpp pch.cpp -lOle32 -lShlwapi
 
 # References
 * Inspired by [stackoverflow question](https://stackoverflow.com/q/25708895/10224443)
+* [MinGW-w64](https://github.com/niXman/mingw-builds-binaries/releases)
+* [CMake](https://cmake.org/download/)
