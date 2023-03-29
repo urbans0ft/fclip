@@ -110,8 +110,37 @@ int copy(int argc, wchar_t* argv[])
 	return 0;
 }
 
+void printClipboardFormats()
+{
+	DWORD errCode = 0;
+	UINT format   = 0;
+	DBGPRINT(L"Enumarating clipboard formats");
+	OpenClipboard(NULL);
+	UNUSED(HANDLE hHdrop);
+	hHdrop = GetClipboardData(CF_HDROP);
+	errCode = GetLastError();
+
+	while ((format = EnumClipboardFormats(format)))
+	{
+		const static int cchMaxCount = 255;
+		wchar_t lpszFormatName[cchMaxCount];
+		GetClipboardFormatName(format, lpszFormatName, cchMaxCount);
+		DBGPRINT(L"Format: %d, %S", format, lpszFormatName);
+	}
+	errCode = GetLastError();
+	if (errCode != ERROR_SUCCESS)
+	{
+		DBGPRINT(L"GetLastError: %d", errCode);
+	}
+	CloseClipboard();
+}
+
 void paste()
 {
+	printClipboardFormats();
+
+
+
 	DBGPRINT(L"Check if files need to be pasted.");
 	UINT formatFileDescriptor = RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
 	UINT formatFileContents   = RegisterClipboardFormat(CFSTR_FILECONTENTS);
