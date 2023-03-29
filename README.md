@@ -10,7 +10,7 @@ In reference to the windows `clip` the ~~`fclip`~~ (see [Changes](#changes)) `fi
 
 # Usage
 
-    fclip [-v | file1 [file2 [... [fileN]]]]
+    fileclip [-v | file1 [file2 [... [fileN]]]]
 
 If you'd like a stable version use the [release](https://github.com/urbans0ft/fclip/releases)
 provided.
@@ -20,16 +20,16 @@ provided.
 **Example:**
 
 ```
->fclip file1.dat ..\file2.dat "C:\long folder\file3.dat" "C:\file4.dat"
+> fileclip file1.dat ..\file2.dat "C:\long folder\file3.dat" "C:\file4.dat"
 ```
 
-`fclip` supports relative and absolute paths. Moreover the path existence is
+`fileclip` supports relative and absolute paths. Moreover the path existence is
 checked before modifying the clipboard data. If a path does not exist `fclip`
 returns `INVALID_FILE_ATTRIBUTES` wich is equivalent to -1.
 
 ```
->fclip file-does-not-exist.dat
->echo %ERRORLEVEL%
+> fileclip file-does-not-exist.dat
+> echo %ERRORLEVEL%
 -1
 ```
 
@@ -37,9 +37,9 @@ Press `ctrl + v` to paste the files.
 
 ## Pasting
 
-    fclip -v
+    fileclip -v
 
-`fclip -v` checks if the clipboard contains a file reference and pastes it to
+`fileclip -v` checks if the clipboard contains a file reference and pastes it to
 the current location. It simulates pressing `ctrl + v`.
 
 # Changes
@@ -138,23 +138,15 @@ there's no need to (re-)run it again. Instead the project may be (re-)compiled a
 ..\fclip>cmake --build bin\debug
 [ 33%] Building CXX object CMakeFiles/fclip.dir/fclip.cpp.obj
 [ 66%] Building CXX object CMakeFiles/fclip.dir/pch.cpp.obj
-[100%] Linking CXX executable fclip.exe
-[100%] Built target fclip
+[100%] Linking CXX executable fileclip.exe
+[100%] Built target fileclip
 ```
 ```
 ..\fclip>cmake --build bin\release
 [ 33%] Building CXX object CMakeFiles/fclip.dir/fclip.cpp.obj
 [ 66%] Building CXX object CMakeFiles/fclip.dir/pch.cpp.obj
-[100%] Linking CXX executable fclip.exe
-[100%] Built target fclip
-```
-
-## Manual
-
-With MinGW-w64 installed you may compile the application via command line:
-
-```
-g++ -s -DUNICODE -D_UNICODE -o fclip -static fclip.cpp pch.cpp -lOle32 -lShlwapi
+[100%] Linking CXX executable fileclip.exe
+[100%] Built target fileclip
 ```
 
 # References
