@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             //"program": "${command:cmake.launchTargetPath}",
-            "program": "${workspaceFolder}/bin/debug/fclip.exe",
+            "program": "${workspaceFolder}/bin/debug/fileclip.exe",
             "args": [],
             "stopAtEntry": false,
             //"cwd": "${command:cmake.getLaunchTargetDirectory}",

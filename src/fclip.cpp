@@ -46,7 +46,8 @@ int main(int argc, char** /*argv*/)
 	DBGPRINT(L"%S %s", VERSION, __DATE__ " " __TIME__);
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLine(), &argc);
 	if (argc == 1) {
-		std::wcout << argv[0] << L" Version " << VERSION << std::endl;
+		std::filesystem::path exe = argv[0];
+		std::wcout << exe.stem().wstring() << L" Version " << VERSION << std::endl;
 		return 0;
 	}
 	// parse command line parameter

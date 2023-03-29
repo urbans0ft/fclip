@@ -1,23 +1,12 @@
-# fclip v2.0
+# fclip v2.1
 
-In reference to the windows `clip` the `fclip` command copies files to the windows clipboard or pastes them from it.
+In reference to the windows `clip` the ~~`fclip`~~ (see [Changes](#changes)) `fileclip` command copies files to the windows clipboard or pastes them from it.
 
 ![fclip demo](fclip-demo.gif)
 
-**Major Changes since v2.0**
+**Breaking change in v2.1**
 
-- UNICODE-only support:
-
-	> Windows natively supports Unicode strings for UI elements, file names,
-	  and so forth. Unicode is the preferred character encoding, because it
-	  supports all character sets and languages. Windows represents Unicode
-	  characters using UTF-16 encoding, in which each character is encoded as
-	  one or two 16-bit values.
-	
-	_&mdash;[microsoft.com](https://learn.microsoft.com/en-us/windows/win32/learnwin32/working-with-strings)_
-
-- 64-bit only (since its 2022)
-- CMake build system
+> At some point (mid 2022[?]) Microsoft introduced a `fclip.exe` (`C:\Windows\System32\fclip.exe`) which is totatlly unrelated to this project! Due to this fact the fclip project now deploys a **`fileclip.exe`**.
 
 # Usage
 
@@ -55,15 +44,30 @@ the current location. It simulates pressing `ctrl + v`.
 
 # Changes
 
-- v2.0.0
+- v2.1 **Breaking Changes**
+	- Change(s): `fclip` becomes `fileclip` executable.
+	- Develop: vscode project fully integrates cmake with gcc.
+
+- v2.0 **Major Changes**
+
 	- Bug(s):
 		- support of relative file names (..\\..\\file.dat)
 		- return value on copy failure (-1)
 	- Change(s):
-		- Removed non UNICODE support
-		- cmake version control
+		- 64-bit only (since its 2022)
 		- fclip version info
 	- Develop:
+		- UNICODE-only support:
+
+			> Windows natively supports Unicode strings for UI elements, file names,
+		  and so forth. Unicode is the preferred character encoding, because it
+		  supports all character sets and languages. Windows represents Unicode
+		  characters using UTF-16 encoding, in which each character is encoded as
+		  one or two 16-bit values.
+
+			_&mdash;[microsoft.com](https://learn.microsoft.com/en-us/windows/win32/learnwin32/working-with-strings)_
+
+		- CMake build system
 		- Increased verbosity
 
 # Building
