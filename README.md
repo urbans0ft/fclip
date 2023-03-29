@@ -24,7 +24,7 @@ provided.
 ```
 
 `fileclip` supports relative and absolute paths. Moreover the path existence is
-checked before modifying the clipboard data. If a path does not exist `fclip`
+checked before modifying the clipboard data. If a path does not exist `fileclip`
 returns `INVALID_FILE_ATTRIBUTES` wich is equivalent to -1.
 
 ```
@@ -77,7 +77,7 @@ the current location. It simulates pressing `ctrl + v`.
 - cmake
 - gcc (MinGW-w64)
 
-Building it known to work with:
+Building is known to work with:
 
 ```
 > cmake --version
@@ -134,6 +134,8 @@ Generating the release configuration:
 After the successfull configuration the project may be compiled. If no changes to the CMake configuration files are made
 there's no need to (re-)run it again. Instead the project may be (re-)compiled any time.
 
+**Debug**
+
 ```
 ..\fclip>cmake --build bin\debug
 [ 33%] Building CXX object CMakeFiles/fclip.dir/fclip.cpp.obj
@@ -141,6 +143,9 @@ there's no need to (re-)run it again. Instead the project may be (re-)compiled a
 [100%] Linking CXX executable fileclip.exe
 [100%] Built target fileclip
 ```
+
+**Release**
+
 ```
 ..\fclip>cmake --build bin\release
 [ 33%] Building CXX object CMakeFiles/fclip.dir/fclip.cpp.obj
