@@ -1,0 +1,47 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 25,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "default",
+            "hidden": true,
+            "displayName": "Default Configuration",
+            "description": "Default 'MinGW Makefiles' configuration used for inheritance",
+            "generator": "MinGW Makefiles"
+        },
+        {
+            "name": "debug",
+            "inherits": "default",
+            "displayName": "Debug Configuration",
+            "description": "Configure debug usin 'MinGW Makefiles'",
+            "binaryDir": "${sourceDir}/bin/debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "release",
+            "inherits": "default",
+            "displayName": "Release Configuration",
+            "description": "Configure release configuration using 'MinGW Makefiles'",
+            "binaryDir": "${sourceDir}/bin/release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "debug"
+        },
+        {
+            "name": "release",
+            "configurePreset": "release"
+        }
+    ]
+}

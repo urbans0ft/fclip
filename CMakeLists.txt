@@ -21,9 +21,10 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 
-add_executable(${TARGET} fclip.cpp pch.cpp)
+#add_executable(${TARGET} fclip.cpp pch.cpp)
+add_executable(${TARGET} src/fclip.cpp src/pch.cpp)
 
-configure_file(pch.h.in pch.h)
+configure_file(src/pch.h.in pch.h)
 target_include_directories(${TARGET} PUBLIC "${PROJECT_BINARY_DIR}")
 
 target_link_libraries(${TARGET} -static)

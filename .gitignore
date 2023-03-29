@@ -2,6 +2,7 @@
 .*
 # ... but these:
 !.gitignore
+!.vscode/
 
 # ignore build (binaries, documentation)
 bin/
