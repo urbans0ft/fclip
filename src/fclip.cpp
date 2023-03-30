@@ -135,10 +135,32 @@ void printClipboardFormats()
 	CloseClipboard();
 }
 
+void pasteByCfHDrop(CLIPFORMAT format)
+{
+	UNUSED(HRESULT result);
+	result = OleInitialize(NULL);
+	IDataObject* dataObject;
+	result = OleGetClipboard(&dataObject);
+	FORMATETC formatDescriptor{
+		format,
+		NULL,
+		DVASPECT_CONTENT,
+		-1,
+		TYMED_HGLOBAL
+	};
+	STGMEDIUM mediumDescriptor;
+	result = dataObject->GetData(&formatDescriptor, &mediumDescriptor);
+	DROPFILES* pFileGrpDescriptor = 
+		(DROPFILES*)GlobalLock(mediumDescriptor.hGlobal);
+	UINT fileCount = DragQueryFile((HDROP)mediumDescriptor.hGlobal, 0xFFFFFFFF, NULL, 0);
+	int lala = 0;
+}
+
 void paste()
 {
 	printClipboardFormats();
 
+	pasteByCfHDrop(CF_HDROP);
 
 
 	DBGPRINT(L"Check if files need to be pasted.");
