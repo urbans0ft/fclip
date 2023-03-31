@@ -14,7 +14,7 @@
 			"label": "CMake: build",
 			"command": "build",
 			"targets": [
-				"fclip"
+				"fileclip"
 			],
 			"preset": "debug",
 			"group": {
