@@ -44,6 +44,11 @@ the current location. It simulates pressing `ctrl + v`.
 
 # Changes
 
+- v2.2
+	- Bug(s)
+		- Fallback to paste by CF_HDROP if FILECONTENTS is not available.
+	- Develop:
+		- Enumerating clipboard formats in DEBUG mode.
 - v2.1 **Breaking Changes**
 	- Change(s): `fclip` becomes `fileclip` executable.
 	- Develop: vscode project fully integrates cmake with gcc.

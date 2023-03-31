@@ -1,9 +1,9 @@
 /**
- * @file fclip.cpp
- * @author Nico V. Urbanczyk (nico@urbansoft.eu)
- * @brief Complete source code with all functionality.
- * @version 0.1
- * @date 2022-10-21
+ * @file      fclip.cpp
+ * @author    Nico V. Urbanczyk (nico@urbansoft.eu)
+ * @brief     Complete source code with all functionality.
+ * @version   0.1
+ * @date      2022-10-21
  * 
  * @copyright Copyright (c) 2022
  * 
@@ -30,16 +30,27 @@ void paste();
  * 
  * This function gets called by paste() do not use it directly.
  * 
- * @param clFileDescriptor The clipboard format used with the CFSTR_FILECONTENTS format to transfer data as a group of files.
- * @param clFileContents   The clipboard format used with the CFSTR_FILEDESCRIPTOR format to transfer data as if it were a file, regardless of how it is actually stored.
+ * @param clFileDescriptor The clipboard format used with the CFSTR_FILECONTENTS format to transfer
+ *                         data as a group of files.
+ * @param clFileContents   The clipboard format used with the CFSTR_FILEDESCRIPTOR format to
+ *                         transfer data as if it were a file, regardless of how it is actually
+ *                         stored.
  */
 void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents);
+/**
+ * @brief Prints the currently available clipboard formats.
+ * 
+ * Used for debugging: Prints all currently available clipboard formats to
+ * the console.
+ */
+#ifdef DEBUG
+void printClipboardFormats();
+#endif
 
 /**
  * @brief The main entry point
  * 
  * @param argc The command line argument count
- * 
  */
 int main(int argc, char** /*argv*/)
 {
@@ -84,14 +95,14 @@ int copy(int argc, wchar_t* argv[])
 	clpSize += sizeof(wchar_t); // two \0 needed at the end
 
 	DBGPRINT(L"Alloc global memory %d", clpSize);
-							  // allocate the zero initialized memory
+	// allocate the zero initialized memory
 	HDROP hdrop = (HDROP)GlobalAlloc(GHND, clpSize);
 	DROPFILES* df = (DROPFILES*)GlobalLock(hdrop);
 	df->pFiles = sizeof(DROPFILES); // string offset
 	df->fWide = TRUE; // unicode file names
 
 	DBGPRINT(L"Copy filename(s) to global memory.");
-					  // copy the command line args to the allocated memory
+	// copy the command line args to the allocated memory
 	wchar_t* dstStart = (wchar_t*)&df[1];
 	for (int i = 0; i < argc - 1; i++)
 	{
@@ -110,39 +121,14 @@ int copy(int argc, wchar_t* argv[])
 	return 0;
 }
 
-void printClipboardFormats()
-{
-	DWORD errCode = 0;
-	UINT format   = 0;
-	DBGPRINT(L"Enumarating clipboard formats");
-	OpenClipboard(NULL);
-	UNUSED(HANDLE hHdrop);
-	hHdrop = GetClipboardData(CF_HDROP);
-	errCode = GetLastError();
-
-	while ((format = EnumClipboardFormats(format)))
-	{
-		const static int cchMaxCount = 255;
-		wchar_t lpszFormatName[cchMaxCount];
-		GetClipboardFormatName(format, lpszFormatName, cchMaxCount);
-		DBGPRINT(L"Format: %d, %S", format, lpszFormatName);
-	}
-	errCode = GetLastError();
-	if (errCode != ERROR_SUCCESS)
-	{
-		DBGPRINT(L"GetLastError: %d", errCode);
-	}
-	CloseClipboard();
-}
-
-void pasteByCfHDrop(CLIPFORMAT format)
+void pasteByCfHDrop()
 {
 	UNUSED(HRESULT result);
 	result = OleInitialize(NULL);
 	IDataObject* dataObject;
 	result = OleGetClipboard(&dataObject);
 	FORMATETC formatDescriptor{
-		format,
+		CF_HDROP,
 		NULL,
 		DVASPECT_CONTENT,
 		-1,
@@ -150,28 +136,47 @@ void pasteByCfHDrop(CLIPFORMAT format)
 	};
 	STGMEDIUM mediumDescriptor;
 	result = dataObject->GetData(&formatDescriptor, &mediumDescriptor);
-	DROPFILES* pFileGrpDescriptor = 
-		(DROPFILES*)GlobalLock(mediumDescriptor.hGlobal);
 	UINT fileCount = DragQueryFile((HDROP)mediumDescriptor.hGlobal, 0xFFFFFFFF, NULL, 0);
-	int lala = 0;
+	DBGPRINT(L"Found %d files in in clipboard.", fileCount);
+	for (UINT i = 0; i < fileCount; i++)
+	{
+		UINT cch = DragQueryFile((HDROP)mediumDescriptor.hGlobal, i, NULL, 0) + 1;
+		DBGPRINT(L"File[%d].Length => %d", i, cch-1);
+		wchar_t* fileName = new wchar_t[cch];
+		DragQueryFile((HDROP)mediumDescriptor.hGlobal, i, fileName, cch);
+		DBGPRINT(L"File[%d].Name => %S", i, fileName);
+		std::filesystem::path filePath = fileName;
+		DBGPRINT(L"Copy '%S' to '%S'", filePath.c_str(), filePath.filename().c_str());
+		std::filesystem::copy(filePath, filePath.filename());
+
+		delete[] fileName;
+	}
 }
 
 void paste()
 {
+	#ifdef DEBUG
 	printClipboardFormats();
-
-	pasteByCfHDrop(CF_HDROP);
-
+	#endif
 
 	DBGPRINT(L"Check if files need to be pasted.");
 	UINT formatFileDescriptor = RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
 	UINT formatFileContents   = RegisterClipboardFormat(CFSTR_FILECONTENTS);
+	// prefer pasteByFileContents() over pasteByCfHDrop()
 	if (IsClipboardFormatAvailable(formatFileDescriptor)
 		&& IsClipboardFormatAvailable(formatFileContents))
 	{
+		DBGPRINT(L"Pasting by FILECONTENTS / FILEDESCRIPTOR");
 		pasteByFileContents(formatFileDescriptor, formatFileContents);
 		return;
 	}
+	else if (IsClipboardFormatAvailable(CF_HDROP))
+	{
+		DBGPRINT(L"Pasting by CF_HDROP");
+		pasteByCfHDrop();
+		return;
+	}
+
 	DBGPRINT(L"Nothing to paste.");
 }
 
@@ -234,3 +239,30 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 		CloseHandle(hFile);
 	}
 }
+
+#ifdef DEBUG
+void printClipboardFormats()
+{
+	DWORD errCode = 0;
+	UINT format   = 0;
+	DBGPRINT(L"Enumarating clipboard formats");
+	OpenClipboard(NULL);
+	UNUSED(HANDLE hHdrop);
+	hHdrop = GetClipboardData(CF_HDROP);
+	errCode = GetLastError();
+
+	while ((format = EnumClipboardFormats(format)))
+	{
+		const static int cchMaxCount = 255;
+		wchar_t lpszFormatName[cchMaxCount];
+		GetClipboardFormatName(format, lpszFormatName, cchMaxCount);
+		DBGPRINT(L"Format: %d, %S", format, lpszFormatName);
+	}
+	errCode = GetLastError();
+	if (errCode != ERROR_SUCCESS)
+	{
+		DBGPRINT(L"GetLastError: %d", errCode);
+	}
+	CloseClipboard();
+}
+#endif
