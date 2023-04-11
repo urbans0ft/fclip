@@ -1,4 +1,4 @@
-# fclip v2.1
+# fclip
 
 In reference to the windows `clip` the ~~`fclip`~~ (see [Changes](#changes)) `fileclip` command copies files to the windows clipboard or pastes them from it.
 
@@ -37,10 +37,19 @@ Press `ctrl + v` to paste the files.
 
 ## Pasting
 
-    fileclip -v
+```
+> fileclip -v
+```
 
 `fileclip -v` checks if the clipboard contains a file reference and pastes it to
 the current location. It simulates pressing `ctrl + v`.
+
+## Version
+
+```
+> fileclip
+fileclip Version 2.2.0
+```
 
 # Changes
 
