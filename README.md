@@ -106,6 +106,15 @@ OS Name:                   Microsoft Windows 10 Enterprise
 OS Version:                10.0.19041 N/A Build 19041
 ```
 
+# Installation
+
+## Registry
+
+https://learn.microsoft.com/en-us/windows/win32/shell/app-registration
+
+- HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths
+- HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths ???
+
 ## CMake
 
 Example configuration and compilation assuming `g++` (MinGW-w64) is installed.
