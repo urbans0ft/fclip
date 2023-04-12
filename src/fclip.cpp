@@ -11,6 +11,13 @@
 #include "pch.h" // Pre-compiled header
 
 /**
+ * @brief Pint usage information.
+ * 
+ * Displays usage information on the console.
+ * 
+ */
+void usage();
+/**
  * @brief Copy the files specified by the command line to the clipboard.
  * 
  * @param argc The command line argument count
@@ -60,8 +67,9 @@ int main(int argc, char** /*argv*/)
 	if (argc == 1) {
 		std::filesystem::path exe = argv[0];
 		std::wcout << exe.stem().wstring() << L" Version " << VERSION << std::endl;
+		usage();
 		DBGPRINT(L"GetConsoleProcessList => %d", processCount);
-		if (processCount < 2) {
+		if (processCount < 2) { // < 2 => GUI
 			system("pause");
 		}
 		return 0;
@@ -243,6 +251,22 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 		} while (read == ISTREAM_BUF_SIZE);
 		CloseHandle(hFile);
 	}
+}
+
+void usage()
+{
+	std::wcout << L"" << std::endl;
+	std::wcout << L"Copys files to the clipbard as if done by pressing <ctrl>+c" << std::endl;
+	std::wcout << L"or pastes files from the clipboard by copying them to the current location." << std::endl;
+	std::wcout << std::endl;
+	std::wcout << L"fileclip [-v | file1 [file2 [... [fileN]]]]" << std::endl;
+	std::wcout << std::endl;
+	std::wcout << L"-v        Paste files previously copyied to the cliboard into the current folder." << std::endl;
+	std::wcout << L"file1 ... The relative and/or absolute file paths to copy to the clipboard." << std::endl;
+	std::wcout << std::endl;
+	std::wcout << L"example:" << std::endl;
+	std::wcout << L"> fileclip -v" << std::endl;
+	std::wcout << L"> fileclip C:\\path\\to\\file1 file2 ..\\file3 \"folder\\file 4\"" << std::endl;
 }
 
 #ifdef DEBUG
