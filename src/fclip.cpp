@@ -54,11 +54,16 @@ void printClipboardFormats();
  */
 int main(int argc, char** /*argv*/)
 {
+	DWORD procId; DWORD processCount = GetConsoleProcessList(&procId, 1);	
 	DBGPRINT(L"%S %s", VERSION, __DATE__ " " __TIME__);
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLine(), &argc);
 	if (argc == 1) {
 		std::filesystem::path exe = argv[0];
 		std::wcout << exe.stem().wstring() << L" Version " << VERSION << std::endl;
+		DBGPRINT(L"GetConsoleProcessList => %d", processCount);
+		if (processCount < 2) {
+			system("pause");
+		}
 		return 0;
 	}
 	// parse command line parameter
