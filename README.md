@@ -1,4 +1,4 @@
-# fclip v2.1
+# fclip
 
 In reference to the windows `clip` the ~~`fclip`~~ (see [Changes](#changes)) `fileclip` command copies files to the windows clipboard or pastes them from it.
 
@@ -37,10 +37,19 @@ Press `ctrl + v` to paste the files.
 
 ## Pasting
 
-    fileclip -v
+```
+> fileclip -v
+```
 
 `fileclip -v` checks if the clipboard contains a file reference and pastes it to
 the current location. It simulates pressing `ctrl + v`.
+
+## Version
+
+```
+> fileclip
+fileclip Version 2.2.0
+```
 
 # Changes
 
@@ -96,6 +105,15 @@ g++.exe (x86_64-win32-seh-rev2, Built by MinGW-W64 project) 12.2.0
 OS Name:                   Microsoft Windows 10 Enterprise
 OS Version:                10.0.19041 N/A Build 19041
 ```
+
+# Installation
+
+## Registry
+
+https://learn.microsoft.com/en-us/windows/win32/shell/app-registration
+
+- HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths
+- HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths ???
 
 ## CMake
 
