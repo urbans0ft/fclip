@@ -54,6 +54,119 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 void printClipboardFormats();
 #endif
 
+class LastError
+{
+public:
+	static LastError New()
+	{
+		return New(GetLastError());
+	}
+	static LastError New(DWORD lastErrorCode)
+	{
+		return LastError{lastErrorCode};
+	}
+private:
+	DWORD _lastErrorCode;
+	LPWSTR _lastErrorMessage;
+public:
+	LastError() : LastError{GetLastError()}
+	{
+		DBGPRINT(L"Default c'tor.");
+	}
+	LastError(DWORD lastErrorCode) : _lastErrorCode{lastErrorCode}, _lastErrorMessage{nullptr}
+	{
+		DBGPRINT(L"C'tor(lastErrorCode := %d)", _lastErrorCode);
+		setLastErrorMessage();
+	}
+	~LastError()
+	{
+		DBGPRINT(L"Destructor");
+		resetLastErrorMessage();
+	}
+	/**
+	 * @brief Construct a new LastError object by copying from another
+	 * 
+	 * @param other 
+	 */
+	LastError(const LastError& other) : LastError{other._lastErrorCode}
+	{
+		DBGPRINT(L"Copy c'tor");
+	}
+	/**
+	 * @brief Move C'tor semantics
+	 * 
+	 * @param other 
+	 */
+	LastError(LastError&& other) noexcept
+    	: _lastErrorMessage(std::exchange(other._lastErrorMessage, nullptr))
+	{
+		DBGPRINT(L"Move c'tor");
+	}
+
+	/**
+	 * @brief Copy assignment operator.
+	 * 
+	 * @param other 
+	 * @return LastError& 
+	 */
+    LastError& operator=(const LastError& other)
+    {
+		DBGPRINT(L"copy assignment");
+        if (this == &other)
+            return *this;
+ 
+        _lastErrorMessage = other._lastErrorMessage;
+		setLastErrorMessage();
+ 
+        return *this;
+    }
+	/**
+	 * @brief Move assignment operator.
+	 * 
+	 * @param other 
+	 * @return LastError& 
+	 */
+	LastError& operator=(LastError&& other) noexcept
+    {
+		DBGPRINT(L"move assignment");
+        std::swap(_lastErrorMessage, other._lastErrorMessage);
+        return *this;
+    }
+	LPCWSTR c_str() const
+	{
+		return _lastErrorMessage;
+	}
+private:
+	void resetLastErrorMessage()
+	{
+		if (_lastErrorMessage != nullptr) {
+			LocalFree(_lastErrorMessage);
+			_lastErrorMessage = nullptr;
+		}
+	}
+	void setLastErrorMessage()
+	{
+		resetLastErrorMessage();
+		DWORD msgLength = FormatMessage(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL,
+			_lastErrorCode,
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			(LPWSTR)&_lastErrorMessage,
+			0,
+			NULL
+		);
+		// remove cr lf
+		_lastErrorMessage[msgLength - 2] = '\0';
+	}
+	friend std::wostream& operator<<(std::wostream& os, const LastError& error);
+};
+std::wostream& operator<<(std::wostream& os, const LastError& error)
+{
+	os << error._lastErrorMessage;
+	return os;
+}
+
 /**
  * @brief The main entry point
  * 
@@ -61,6 +174,11 @@ void printClipboardFormats();
  */
 int main(int argc, char** /*argv*/)
 {
+	GetProcessId(NULL);
+	const auto& err = LastError::New();
+	DBGPRINT(L"%S", err.c_str());
+	std::wcout << err << std::endl;
+
 	DWORD procId; DWORD processCount = GetConsoleProcessList(&procId, 1);	
 	DBGPRINT(L"%S %s", VERSION, __DATE__ " " __TIME__);
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLine(), &argc);
