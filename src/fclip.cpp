@@ -136,6 +136,10 @@ public:
 	{
 		return _lastErrorMessage;
 	}
+	DWORD getLastError() const
+	{
+		return _lastErrorCode;
+	}
 private:
 	void resetLastErrorMessage()
 	{
@@ -175,9 +179,12 @@ std::wostream& operator<<(std::wostream& os, const LastError& error)
 int main(int argc, char** /*argv*/)
 {
 	GetProcessId(NULL);
-	const auto& err = LastError::New();
-	DBGPRINT(L"%S", err.c_str());
-	std::wcout << err << std::endl;
+	LastError err = LastError::New();
+	DBGPRINT("[%x]: %S", err.getLastError(), err.c_str());
+
+	SetLastError(0);
+	err = LastError::New();
+	DBGPRINT("[%x]: %S", err.getLastError(), err.c_str());
 
 	DWORD procId; DWORD processCount = GetConsoleProcessList(&procId, 1);	
 	DBGPRINT(L"%S %s", VERSION, __DATE__ " " __TIME__);
