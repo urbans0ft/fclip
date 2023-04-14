@@ -23,6 +23,8 @@
 #include <Shlobj.h>   // DROPFILES
 #include <ShellApi.h> // CommandLineToArgvW()
 
+#include "LastError.h"
+
 #define VERSION L"@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
 
 #ifdef __GNUC__
