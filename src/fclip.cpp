@@ -98,7 +98,8 @@ public:
 	 * @param other 
 	 */
 	LastError(LastError&& other) noexcept
-    	: _lastErrorMessage(std::exchange(other._lastErrorMessage, nullptr))
+		: _lastErrorCode(std::exchange(other._lastErrorCode, 0)),
+    	  _lastErrorMessage(std::exchange(other._lastErrorMessage, nullptr))
 	{
 		DBGPRINT(L"Move c'tor");
 	}
@@ -115,7 +116,7 @@ public:
         if (this == &other)
             return *this;
  
-        _lastErrorMessage = other._lastErrorMessage;
+        _lastErrorCode = other._lastErrorCode;
 		setLastErrorMessage();
  
         return *this;
@@ -129,6 +130,7 @@ public:
 	LastError& operator=(LastError&& other) noexcept
     {
 		DBGPRINT(L"move assignment");
+        std::swap(_lastErrorCode, other._lastErrorCode);
         std::swap(_lastErrorMessage, other._lastErrorMessage);
         return *this;
     }
@@ -180,11 +182,11 @@ int main(int argc, char** /*argv*/)
 {
 	GetProcessId(NULL);
 	LastError err = LastError::New();
-	DBGPRINT("[%x]: %S", err.getLastError(), err.c_str());
+	DBGPRINT("[0x%x]: %S", err.getLastError(), err.c_str());
 
-	SetLastError(0);
+	SetLastError(255);
 	err = LastError::New();
-	DBGPRINT("[%x]: %S", err.getLastError(), err.c_str());
+	DBGPRINT("[0x%x]: %S", err.getLastError(), err.c_str());
 
 	DWORD procId; DWORD processCount = GetConsoleProcessList(&procId, 1);	
 	DBGPRINT(L"%S %s", VERSION, __DATE__ " " __TIME__);
