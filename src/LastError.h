@@ -1,3 +1,5 @@
+#pragma once
+#include "pch.h"
 class LastError
 {
 public:
@@ -195,8 +197,3 @@ private:
      */
 	friend std::wostream& operator<<(std::wostream& os, const LastError& error);
 };
-std::wostream& operator<<(std::wostream& os, const LastError& error)
-{
-	os << error._lastErrorMessage;
-	return os;
-}

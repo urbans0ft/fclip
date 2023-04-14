@@ -22,10 +22,10 @@ else()
 endif()
 
 #add_executable(${TARGET} fclip.cpp pch.cpp)
-add_executable(${TARGET} src/fclip.cpp src/pch.cpp)
+add_executable(${TARGET} src/fclip.cpp src/pch.cpp src/LastError.cpp)
 
 configure_file(src/pch.h.in pch.h)
-target_include_directories(${TARGET} PUBLIC "${PROJECT_BINARY_DIR}")
+target_include_directories(${TARGET} PUBLIC "${PROJECT_BINARY_DIR}" src)
 
 target_link_libraries(${TARGET} -static)
 target_link_libraries(${TARGET} Ole32)
