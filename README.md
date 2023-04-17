@@ -53,6 +53,14 @@ fileclip Version 2.2.0
 
 # Changes
 
+- v2.3
+	- Change(s):
+		- Display usage information when starting `fileclip` without parameter.
+		- Keep console window open when executing `fileclip` via the explorer (e.g. double-click).
+		- Display last error on stderr if copying fails.
+		- Error message in english only.
+	- Develop:
+		- LastError class to facilitate message retrieval of `GetLastError` error codes.
 - v2.2
 	- Bug(s)
 		- Fallback to paste by CF_HDROP if FILECONTENTS is not available.
