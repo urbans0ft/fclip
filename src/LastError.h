@@ -46,7 +46,7 @@ public:
      * 
      * @sa https://learn.microsoft.com/en-us/windows/win32/api/errhandlingapi/nf-errhandlingapi-getlasterror
      * 
-     * @param lastErrorCode On of the [system error codes](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes)
+     * @param lastErrorCode One of the [system error codes](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes)
      */
 	LastError(DWORD lastErrorCode);
     /**
