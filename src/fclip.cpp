@@ -109,8 +109,11 @@ int copy(int argc, wchar_t* argv[])
 		// path elements (e.g.: ..\..\file.dat might become C:\file.dat).
 		bufSizes[i - 1] = GetFullPathName(argv[i], bufSizes[i - 1], files[i - 1], NULL) + 1; // +1 => \0
 		DBGPRINT(L"(Re-)setting buffer size to %d", bufSizes[i - 1]);
-		if (GetFileAttributes(files[i - 1]) == INVALID_FILE_ATTRIBUTES)
+		if (GetFileAttributes(files[i - 1]) == INVALID_FILE_ATTRIBUTES) {
+			const auto& err = LastError::New();
+			std::wcerr << files[i - 1] << ": " << err << std::endl;
 			return INVALID_FILE_ATTRIBUTES;
+		}
 		// calculate *bytes* needed for memory allocation
 		clpSize += sizeof(wchar_t) * (bufSizes[i - 1]);
 		DBGPRINT(L"Added '%S' to buffer.", files[i - 1]);
