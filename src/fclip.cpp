@@ -9,7 +9,6 @@
  * 
  */
 #include "pch.h" // Pre-compiled header
-#include "LastError.h"
 
 /**
  * @brief Pint usage information.
