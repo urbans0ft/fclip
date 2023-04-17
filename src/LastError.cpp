@@ -95,6 +95,6 @@ void LastError::setLastErrorMessage()
 
 std::wostream& operator<<(std::wostream& os, const LastError& error)
 {
-	os << error._lastErrorMessage;
+	os << "[0x" << std::hex << error._lastErrorCode << "] " << error._lastErrorMessage;
 	return os;
 }
