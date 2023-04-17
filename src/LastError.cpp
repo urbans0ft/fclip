@@ -84,7 +84,7 @@ void LastError::setLastErrorMessage()
         FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         _lastErrorCode,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
         (LPWSTR)&_lastErrorMessage,
         0,
         NULL
