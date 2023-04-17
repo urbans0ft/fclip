@@ -16,11 +16,14 @@
 // TODO: add headers that you want to pre-compile here
 #include <iostream>
 #include <filesystem>
+#include <utility>
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <Shlobj.h>   // DROPFILES
 #include <ShellApi.h> // CommandLineToArgvW()
+
+#include "LastError.h"
 
 #define VERSION L"@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
 

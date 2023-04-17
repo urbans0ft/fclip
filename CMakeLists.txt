@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 set(TARGET fileclip CACHE STRING "The projects name." FORCE)
 
-project(${TARGET} VERSION 2.2.0)
+project(${TARGET} VERSION 2.3.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -22,10 +22,10 @@ else()
 endif()
 
 #add_executable(${TARGET} fclip.cpp pch.cpp)
-add_executable(${TARGET} src/fclip.cpp src/pch.cpp)
+add_executable(${TARGET} src/fclip.cpp src/pch.cpp src/LastError.cpp)
 
 configure_file(src/pch.h.in pch.h)
-target_include_directories(${TARGET} PUBLIC "${PROJECT_BINARY_DIR}")
+target_include_directories(${TARGET} PUBLIC "${PROJECT_BINARY_DIR}" src)
 
 target_link_libraries(${TARGET} -static)
 target_link_libraries(${TARGET} Ole32)

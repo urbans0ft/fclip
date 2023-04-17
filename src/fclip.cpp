@@ -11,6 +11,13 @@
 #include "pch.h" // Pre-compiled header
 
 /**
+ * @brief Pint usage information.
+ * 
+ * Displays usage information on the console.
+ * 
+ */
+void usage();
+/**
  * @brief Copy the files specified by the command line to the clipboard.
  * 
  * @param argc The command line argument count
@@ -47,6 +54,8 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 void printClipboardFormats();
 #endif
 
+
+
 /**
  * @brief The main entry point
  * 
@@ -54,11 +63,17 @@ void printClipboardFormats();
  */
 int main(int argc, char** /*argv*/)
 {
+	DWORD procId; DWORD processCount = GetConsoleProcessList(&procId, 1);	
 	DBGPRINT(L"%S %s", VERSION, __DATE__ " " __TIME__);
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLine(), &argc);
 	if (argc == 1) {
 		std::filesystem::path exe = argv[0];
 		std::wcout << exe.stem().wstring() << L" Version " << VERSION << std::endl;
+		usage();
+		DBGPRINT(L"GetConsoleProcessList => %d", processCount);
+		if (processCount < 2) { // < 2 => GUI
+			system("pause");
+		}
 		return 0;
 	}
 	// parse command line parameter
@@ -86,8 +101,11 @@ int copy(int argc, wchar_t* argv[])
 		// path elements (e.g.: ..\..\file.dat might become C:\file.dat).
 		bufSizes[i - 1] = GetFullPathName(argv[i], bufSizes[i - 1], files[i - 1], NULL) + 1; // +1 => \0
 		DBGPRINT(L"(Re-)setting buffer size to %d", bufSizes[i - 1]);
-		if (GetFileAttributes(files[i - 1]) == INVALID_FILE_ATTRIBUTES)
+		if (GetFileAttributes(files[i - 1]) == INVALID_FILE_ATTRIBUTES) {
+			const auto& err = LastError::New();
+			std::wcerr << files[i - 1] << ": " << err << std::endl;
 			return INVALID_FILE_ATTRIBUTES;
+		}
 		// calculate *bytes* needed for memory allocation
 		clpSize += sizeof(wchar_t) * (bufSizes[i - 1]);
 		DBGPRINT(L"Added '%S' to buffer.", files[i - 1]);
@@ -238,6 +256,22 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 		} while (read == ISTREAM_BUF_SIZE);
 		CloseHandle(hFile);
 	}
+}
+
+void usage()
+{
+	std::wcout << L"" << std::endl;
+	std::wcout << L"Copys files to the clipbard as if done by pressing <ctrl>+c" << std::endl;
+	std::wcout << L"or pastes files from the clipboard by copying them to the current location." << std::endl;
+	std::wcout << std::endl;
+	std::wcout << L"fileclip [-v | file1 [file2 [... [fileN]]]]" << std::endl;
+	std::wcout << std::endl;
+	std::wcout << L"-v        Paste files previously copyied to the cliboard into the current folder." << std::endl;
+	std::wcout << L"file1 ... The relative and/or absolute file paths to copy to the clipboard." << std::endl;
+	std::wcout << std::endl;
+	std::wcout << L"example:" << std::endl;
+	std::wcout << L"> fileclip -v" << std::endl;
+	std::wcout << L"> fileclip C:\\path\\to\\file1 file2 ..\\file3 \"folder\\file 4\"" << std::endl;
 }
 
 #ifdef DEBUG
