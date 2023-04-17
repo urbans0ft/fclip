@@ -108,12 +108,29 @@ OS Version:                10.0.19041 N/A Build 19041
 
 # Installation
 
+## Path Environment
+
+By default `%LOCALAPPDATA%\Microsoft\WindowsApps` should be available within your
+`PATH` environment variable. So copying `fileclip.exe` to this location should enough.
+
+```
+> copy fileclip.exe %LOCALAPPDATA%\Microsoft\WindowsApps
+    1 file(s) copied.
+
+> where fileclip
+C:\Users\<user>\AppData\Local\Microsoft\WindowsApps\fileclip.exe
+```
+
+> The `fileclip.exe` should placed within one directory of the `%PATH%` environment
+> variable or the `PATH` variable needs to be extended with the directory where `fileclip.exe`
+> resides.
+
 ## Registry
 
 https://learn.microsoft.com/en-us/windows/win32/shell/app-registration
 
 - HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths
-- HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths ???
+- HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths
 
 ## CMake
 
