@@ -63,14 +63,6 @@ void printClipboardFormats();
  */
 int main(int argc, char** /*argv*/)
 {
-	GetProcessId(NULL);
-	LastError err = LastError::New();
-	DBGPRINT("[0x%x]: %S", err.getLastError(), err.c_str());
-
-	SetLastError(255);
-	err = LastError::New();
-	DBGPRINT("[0x%x]: %S", err.getLastError(), err.c_str());
-
 	DWORD procId; DWORD processCount = GetConsoleProcessList(&procId, 1);	
 	DBGPRINT(L"%S %s", VERSION, __DATE__ " " __TIME__);
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLine(), &argc);
