@@ -34,7 +34,7 @@ public:
     /**
      * @brief Creates a new LastError object.
      * 
-     * The new LastError object is created by submitting an system error code.
+     * The new LastError object is created by submitting a system error code.
      * 
      * @sa https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes
      * 
