@@ -23,6 +23,7 @@
 #include <Shlobj.h>   // DROPFILES
 #include <ShellApi.h> // CommandLineToArgvW()
 
+#include "fclip.h"
 #include "LastError.h"
 
 /// Version String injected by cmake (MAJOR.MINOR.PATCH)
