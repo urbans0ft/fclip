@@ -27,9 +27,10 @@
 		},
 		{
 			"label": "Doxygen",
+			"command": "doxygen",
+			"args": ["${workspaceFolder}\\doc\\Doxyfile"],
 			"detail": "Build documentation with with Doxygen",
 			"type": "shell",
-			"command": "doxygen",
 			"problemMatcher": []
 		}
 	]

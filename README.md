@@ -2,7 +2,7 @@
 
 In reference to the windows `clip` the ~~`fclip`~~ (see [Changes](#changes)) `fileclip` command copies files to the windows clipboard or pastes them from it.
 
-![fclip demo](fclip-demo.gif)
+![fclip demo](doc/fclip-demo.gif)
 
 **Breaking change in v2.1**
 
