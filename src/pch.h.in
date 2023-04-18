@@ -11,20 +11,21 @@
  * 
  */
 #ifndef PCH_H
-#define PCH_H
+#define PCH_H ///< `#include` guard for pch.h
 
 // TODO: add headers that you want to pre-compile here
 #include <iostream>
 #include <filesystem>
 #include <utility>
 
-#define WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN ///< reduce size by excluding APIs
 #include <Windows.h>
 #include <Shlobj.h>   // DROPFILES
 #include <ShellApi.h> // CommandLineToArgvW()
 
 #include "LastError.h"
 
+/// Version String injected by cmake (MAJOR.MINOR.PATCH)
 #define VERSION L"@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
 
 #ifdef __GNUC__
@@ -32,11 +33,14 @@
 #endif // __GNUC__
 
 #ifdef DEBUG
+/// Print macro when compiling with `DEBUG` macro.
 #define DBGPRINT(_fmt, ...)  wprintf(L"DEBUG [%s:%d@%s] " _fmt L"\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__)
 #else // DEBUG
+/// Empty macro when compiling without `DEBUG` macro.
 #define DBGPRINT(_fmt, ...)
 #endif // DEBUG
 
-#define ISTREAM_BUF_SIZE 1048576 // Byte => 1024 KB => 1 MB
+/// Default buffer size used to read from streams.
+#define ISTREAM_BUF_SIZE 1048576 ///< Byte => 1024 KB => 1 MB
 
 #endif //PCH_H

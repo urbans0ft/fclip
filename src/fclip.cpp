@@ -33,7 +33,7 @@ int copy(int argc, wchar_t* argv[]);
  */
 void paste();
 /**
- * @brief paste file from the clipboard
+ * @brief paste file(s) from the clipboard
  * 
  * This function gets called by paste() do not use it directly.
  * 
@@ -44,6 +44,17 @@ void paste();
  *                         stored.
  */
 void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents);
+/**
+ * @brief paste file(s) from the clipboard
+ * 
+ * This function gets called by paste() do not use it directly. The past operation
+ * is done via `CF_HDROP`.
+ * 
+ * @note No checks are implemented. The caller must ensure that the `CF_HDROP`
+ *       clipboard format is available.
+ * 
+ */
+void pasteByCfHDrop();
 /**
  * @brief Prints the currently available clipboard formats.
  * 
