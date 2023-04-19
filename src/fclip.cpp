@@ -14,10 +14,15 @@
  * @brief The main entry point
  * 
  * @param argc The command line argument count
+ * 
+ * @note `argv` is not used since the program uses unicode and is in need of an
+ *       `argv` of type `wchar_t**`. `main` won't provide such a parameter but `wmain does`.
+ *       Sadly `wmain` is unknown to MinGW (might have changed over time). Therefore the
+ *       argv parameter is resolved by `CommandLineToArgvW`.
  */
 int main(int argc, char** /*argv*/)
 {
-	DWORD procId; DWORD processCount = GetConsoleProcessList(&procId, 1);	
+	DWORD procId; DWORD processCount = GetConsoleProcessList(&procId, 1);
 	DBGPRINT(L"%S %s", VERSION, __DATE__ " " __TIME__);
 	LPWSTR* argv = CommandLineToArgvW(GetCommandLine(), &argc);
 	if (argc == 1) {
@@ -42,9 +47,9 @@ int copy(int argc, wchar_t* argv[])
 {
 	DBGPRINT(L"Copy file(s) to clipboard (count: %d).", argc - 1);
 	// create / fill full file path buffer and calculate global buffer
-	wchar_t** files = new wchar_t*[argc - 1];
-	DWORD*  bufSizes = new DWORD[argc - 1];
-	int     clpSize = sizeof(DROPFILES);
+	wchar_t** files    = new wchar_t*[argc - 1];
+	DWORD*    bufSizes = new DWORD[argc - 1];
+	int       clpSize  = sizeof(DROPFILES);
 
 	for (int i = 1; i < argc; i++) {
 		bufSizes[i - 1] = GetFullPathName(argv[i], 0, NULL, NULL);
@@ -68,10 +73,10 @@ int copy(int argc, wchar_t* argv[])
 
 	DBGPRINT(L"Alloc global memory %d", clpSize);
 	// allocate the zero initialized memory
-	HDROP hdrop = (HDROP)GlobalAlloc(GHND, clpSize);
+	HDROP hdrop   = (HDROP)GlobalAlloc(GHND, clpSize);
 	DROPFILES* df = (DROPFILES*)GlobalLock(hdrop);
-	df->pFiles = sizeof(DROPFILES); // string offset
-	df->fWide = TRUE; // unicode file names
+	df->pFiles    = sizeof(DROPFILES); // string offset
+	df->fWide     = TRUE;              // unicode file names
 
 	DBGPRINT(L"Copy filename(s) to global memory.");
 	// copy the command line args to the allocated memory
@@ -220,7 +225,7 @@ void usage()
 	std::wcout << std::endl;
 	std::wcout << L"fileclip [-v | file1 [file2 [... [fileN]]]]" << std::endl;
 	std::wcout << std::endl;
-	std::wcout << L"-v        Paste files previously copyied to the cliboard into the current folder." << std::endl;
+	std::wcout << L"-v        Paste files previously copied to the cliboard into the current folder." << std::endl;
 	std::wcout << L"file1 ... The relative and/or absolute file paths to copy to the clipboard." << std::endl;
 	std::wcout << std::endl;
 	std::wcout << L"example:" << std::endl;
@@ -236,7 +241,7 @@ void printClipboardFormats()
 	DBGPRINT(L"Enumarating clipboard formats");
 	OpenClipboard(NULL);
 	UNUSED(HANDLE hHdrop);
-	hHdrop = GetClipboardData(CF_HDROP);
+	hHdrop  = GetClipboardData(CF_HDROP);
 	errCode = GetLastError();
 
 	while ((format = EnumClipboardFormats(format)))
