@@ -220,7 +220,7 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 void usage()
 {
 	std::wcout << L"" << std::endl;
-	std::wcout << L"Copys files to the clipbard as if done by pressing <ctrl>+c" << std::endl;
+	std::wcout << L"Copies files to the clipbard as if done by pressing <ctrl>+c" << std::endl;
 	std::wcout << L"or pastes files from the clipboard by copying them to the current location." << std::endl;
 	std::wcout << std::endl;
 	std::wcout << L"fileclip [-v | file1 [file2 [... [fileN]]]]" << std::endl;
