@@ -1,5 +1,22 @@
 #pragma once
+/**
+ * @file LastError.h
+ * @author Nico V. Urbanczyk (nico@urbansoft.eu)
+ * @brief Declaration of the LastError class.
+ * @version 0.1
+ * @date 2023-04-18
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 
+/**
+ * @brief Facilitates the handling of system error codes.
+ * 
+ * Facilitates the handing of windows system error codes perceived by the Win API
+ * function [`GetLastError`](https://learn.microsoft.com/en-us/windows/win32/api/errhandlingapi/nf-errhandlingapi-getlasterror).
+ * 
+ */
 class LastError
 {
 public:
@@ -17,7 +34,7 @@ public:
     /**
      * @brief Creates a new LastError object.
      * 
-     * The new LastError object is created by submitting an system error code.
+     * The new LastError object is created by submitting a system error code.
      * 
      * @sa https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes
      * 
@@ -121,8 +138,10 @@ private:
      * @brief Stream operator to use with (UTF-16) output stream.
      * 
      * Stream operator so a LastError object can be used in output streams.
-     * The error message gets submitted to the stream which is equivalent
-     * to the message received by c_str().
+     * The error message gets submitted to the stream. The output format is:
+     * ```
+     * [<hexErrorCode>] <message>
+     * ```
      * 
      * @param os    the (UTF-16) ouptut stream
      * @param error the LastError object to submit to the stream.

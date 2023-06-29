@@ -24,6 +24,14 @@
 			"problemMatcher": [],
 			"detail": "CMake template build task",
 			"dependsOn": "CMake: configure"
+		},
+		{
+			"label": "Doxygen",
+			"command": "doxygen",
+			"args": ["${workspaceFolder}\\doc\\Doxyfile"],
+			"detail": "Build documentation with with Doxygen",
+			"type": "shell",
+			"problemMatcher": []
 		}
 	]
 }

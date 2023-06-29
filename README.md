@@ -2,7 +2,7 @@
 
 In reference to the windows `clip` the ~~`fclip`~~ (see [Changes](#changes)) `fileclip` command copies files to the windows clipboard or pastes them from it.
 
-![fclip demo](fclip-demo.gif)
+![fclip demo](doc/fclip-demo.gif)
 
 **Breaking change in v2.1**
 
@@ -119,7 +119,7 @@ OS Version:                10.0.19041 N/A Build 19041
 ## Path Environment
 
 By default `%LOCALAPPDATA%\Microsoft\WindowsApps` should be available within your
-`PATH` environment variable. So copying `fileclip.exe` to this location should enough.
+`PATH` environment variable. So copying `fileclip.exe` to this location should be enough.
 
 ```
 > copy fileclip.exe %LOCALAPPDATA%\Microsoft\WindowsApps
@@ -129,16 +129,9 @@ By default `%LOCALAPPDATA%\Microsoft\WindowsApps` should be available within you
 C:\Users\<user>\AppData\Local\Microsoft\WindowsApps\fileclip.exe
 ```
 
-> The `fileclip.exe` should placed within one directory of the `%PATH%` environment
+> The `fileclip.exe` should be placed within one directory of the `%PATH%` environment
 > variable or the `PATH` variable needs to be extended with the directory where `fileclip.exe`
 > resides.
-
-## Registry
-
-https://learn.microsoft.com/en-us/windows/win32/shell/app-registration
-
-- HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths
-- HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths
 
 ## CMake
 
