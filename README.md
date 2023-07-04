@@ -53,6 +53,13 @@ fileclip Version 2.2.0
 
 # Changes
 
+- v2.3.3
+	- Bug(s)
+		- Issue [#7](https://github.com/urbans0ft/fclip/issues/7)
+		- Exception if file exists and gets pasted by CF_HDROP.
+	- Change(s):
+		- Display error message if there's nothing to paste.
+		- Skip files which cannot be pasted (print to stderr).
 - v2.3
 	- Change(s):
 		- Display usage information when starting `fileclip` without parameter.

@@ -124,6 +124,12 @@ void pasteByCfHDrop()
 		DBGPRINT(L"File[%d].Name => %S", i, fileName);
 		std::filesystem::path filePath = fileName;
 		DBGPRINT(L"Copy '%S' to '%S'", filePath.c_str(), filePath.filename().c_str());
+		if (std::filesystem::exists(filePath))
+		{
+			const auto& err = LastError::New(ERROR_FILE_EXISTS);
+			std::wcerr << "Skipping file " << filePath.filename() << " (" << err << ")." << std::endl;
+			continue;
+		}
 		std::filesystem::copy(filePath, filePath.filename());
 
 		delete[] fileName;
@@ -154,7 +160,7 @@ void paste()
 		return;
 	}
 
-	DBGPRINT(L"Nothing to paste.");
+	std::wcerr << "Nothing to paste." << std::endl;
 }
 
 void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
@@ -188,6 +194,12 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 			fDescriptor.dwFileAttributes,
 			NULL
 		);
+		if (hFile == INVALID_HANDLE_VALUE)
+		{
+			const auto& err = LastError::New();
+			std::wcerr << "Skipping file \"" << fDescriptor.cFileName << "\" (" << err << ")." << std::endl;
+			continue;
+		}
 		FORMATETC formatFileContents{
 			clFileContents,
 			NULL,
