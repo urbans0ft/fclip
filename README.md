@@ -53,6 +53,9 @@ fileclip Version 2.2.0
 
 # Changes
 
+- v2.3.3
+	- Bug(s)
+		- Issue #7
 - v2.3
 	- Change(s):
 		- Display usage information when starting `fileclip` without parameter.
