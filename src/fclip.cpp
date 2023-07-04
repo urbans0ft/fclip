@@ -124,6 +124,11 @@ void pasteByCfHDrop()
 		DBGPRINT(L"File[%d].Name => %S", i, fileName);
 		std::filesystem::path filePath = fileName;
 		DBGPRINT(L"Copy '%S' to '%S'", filePath.c_str(), filePath.filename().c_str());
+		if (std::filesystem::exists(filePath))
+		{
+			std::wcerr << "Skipping file " <<filePath.filename() << " (already exists)." << std::endl;
+			continue;
+		}
 		std::filesystem::copy(filePath, filePath.filename());
 
 		delete[] fileName;
