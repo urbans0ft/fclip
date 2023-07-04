@@ -160,7 +160,7 @@ void paste()
 		return;
 	}
 
-	DBGPRINT(L"Nothing to paste.");
+	std::wcerr << "Nothing to paste." << std::endl;
 }
 
 void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
