@@ -193,6 +193,12 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 			fDescriptor.dwFileAttributes,
 			NULL
 		);
+		if (hFile == INVALID_HANDLE_VALUE)
+		{
+			const auto& err = LastError::New();
+			std::wcerr << "Skipping file '" << fDescriptor.cFileName << "' (" << err << ")" << std::endl;
+			continue;
+		}
 		FORMATETC formatFileContents{
 			clFileContents,
 			NULL,
