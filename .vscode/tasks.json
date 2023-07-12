@@ -3,15 +3,24 @@
 	"tasks": [
 		{
 			"type": "cmake",
-			"label": "CMake: configure",
+			"label": "CMake: configure (debug)",
+			"detail": "CMake configure debug",
 			"command": "configure",
 			"preset": "debug",
 			"problemMatcher": [],
-			"detail": "CMake template configure task"
 		},
 		{
 			"type": "cmake",
-			"label": "CMake: build",
+			"label": "CMake: configure (release)",
+			"detail": "CMake configure release",
+			"command": "configure",
+			"preset": "release",
+			"problemMatcher": [],
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: build (debug)",
+			"detail": "CMake build debug",
 			"command": "build",
 			"targets": [
 				"fileclip"
@@ -22,16 +31,41 @@
 				"isDefault": true
 			},
 			"problemMatcher": [],
-			"detail": "CMake template build task",
-			"dependsOn": "CMake: configure"
+			"dependsOn": "CMake: configure (debug)"
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: build (release)",
+			"detail": "CMake build release",
+			"command": "build",
+			"targets": [
+				"fileclip"
+			],
+			"preset": "release",
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"problemMatcher": [],
+			"dependsOn": "CMake: configure (release)"
 		},
 		{
 			"label": "Doxygen",
+			"type": "shell",
 			"command": "doxygen",
 			"args": ["${workspaceFolder}\\doc\\Doxyfile"],
 			"detail": "Build documentation with with Doxygen",
-			"type": "shell",
 			"problemMatcher": []
+		},
+		{
+			"label": "Release Binary",
+			"detail": "Create Binary Release",
+			"type": "process",
+			"command": "xcopy",
+			"args": ["${workspaceFolder}\\bin\\*${command:cmake.getLaunchTargetFilename}", "test", "/S", "/I", "/Y"],
+			"problemMatcher": [],
+			"dependsOn": ["CMake: build (debug)", "CMake: build (release)"],
+			"dependsOrder": "sequence"
 		}
 	]
 }
