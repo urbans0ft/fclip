@@ -2,6 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"hide": true,
 			"type": "cmake",
 			"label": "CMake: configure (debug)",
 			"detail": "CMake configure debug",
@@ -10,6 +11,7 @@
 			"problemMatcher": [],
 		},
 		{
+			"hide": true,
 			"type": "cmake",
 			"label": "CMake: configure (release)",
 			"detail": "CMake configure release",
@@ -62,7 +64,7 @@
 			"detail": "Create Binary Release",
 			"type": "process",
 			"command": "xcopy",
-			"args": ["${workspaceFolder}\\bin\\*${command:cmake.getLaunchTargetFilename}", "test", "/S", "/I", "/Y"],
+			"args": ["${workspaceFolder}\\bin\\*${command:cmake.getLaunchTargetFilename}", "release", "/S", "/I", "/Y"],
 			"problemMatcher": [],
 			"dependsOn": ["CMake: build (debug)", "CMake: build (release)"],
 			"dependsOrder": "sequence"
