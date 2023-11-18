@@ -14,5 +14,7 @@ jobs:
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - name: List files in the repository
         run: |
-          dir /s /b ${{ github.workspace }}
+          cmd /c dir /s /b ${{ github.workspace }}
+      - run: cmake -G "MinGW Makefiles" -S . -B .\bin\release\ -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build bin\release
       - run: echo "🍏 This job's status is ${{ job.status }}."
