@@ -5,7 +5,7 @@ on:
     branches: 
       - master
 jobs:
-  Explore-GitHub-Actions:
+  configure-and-build:
     runs-on: windows-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -18,6 +18,10 @@ jobs:
       - name: List files in the repository
         run: |
           cmd /c dir /s /b ${{ github.workspace }}
-      - run: cmake -G "MinGW Makefiles" -S . -B .\bin\release\ -DCMAKE_BUILD_TYPE=Release
-      - run: cmake --build bin\release
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -G "MinGW Makefiles" -S . -B .\bin\release\ -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build bin\release
       - run: echo "🍏 This job's status is ${{ job.status }}."
