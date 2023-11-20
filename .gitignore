@@ -7,3 +7,4 @@
 # ignore build (binaries, documentation)
 bin/
 html/
+release/
