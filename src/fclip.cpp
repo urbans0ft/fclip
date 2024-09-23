@@ -127,7 +127,7 @@ void pasteByCfHDrop()
 		if (std::filesystem::exists(filePath))
 		{
 			const auto& err = LastError::New(ERROR_FILE_EXISTS);
-			std::wcerr << "Skipping file " << filePath.filename() << " (" << err << ")." << std::endl;
+			std::wcerr << " " << filePath.filename() << " (" << err << ")." << std::endl;
 			continue;
 		}
 		std::filesystem::copy(filePath, filePath.filename());
@@ -185,6 +185,16 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 	{
 		const FILEDESCRIPTOR& fDescriptor = pFileGrpDescriptor->fgd[i];
 		DBGPRINT(L"File in group descriptor: %ls\n", fDescriptor.cFileName);
+		if (fDescriptor.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		{
+			DBGPRINT(L"Creating folder: %ls\n", fDescriptor.cFileName);
+			if (!CreateDirectory(fDescriptor.cFileName, NULL))
+			{
+				const auto& err = LastError::New();
+				std::wcerr << fDescriptor.cFileName << " (" << err << ")." << std::endl;
+			}
+			continue; // folder created -> next file
+		}
 		HANDLE hFile = CreateFile(
 			fDescriptor.cFileName,
 			GENERIC_WRITE,
