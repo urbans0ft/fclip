@@ -187,10 +187,15 @@ void pasteByFileContents(CLIPFORMAT clFileDescriptor, CLIPFORMAT clFileContents)
 		DBGPRINT(L"File in group descriptor: %ls\n", fDescriptor.cFileName);
 		if (fDescriptor.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 		{
-			DBGPRINT(L"Creating folder: %ls\n", fDescriptor.cFileName);
+			DBGPRINT(L"Creating folder: %ls", fDescriptor.cFileName);
 			if (!CreateDirectory(fDescriptor.cFileName, NULL))
 			{
 				const auto& err = LastError::New();
+				if (err.getLastError() == ERROR_ALREADY_EXISTS)
+				{
+					DBGPRINT(L"Folder '%ls' already exists.", fDescriptor.cFileName);
+					continue; // folder already exists -> next file
+				}
 				std::wcerr << fDescriptor.cFileName << " (" << err << ")." << std::endl;
 			}
 			continue; // folder created -> next file
