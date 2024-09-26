@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 set(TARGET fileclip CACHE STRING "The projects name." FORCE)
 
-project(${TARGET} VERSION 2.3.3)
+project(${TARGET} VERSION 2.3.4)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)

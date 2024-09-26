@@ -38,7 +38,7 @@ public:
      * 
      * @sa https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes
      * 
-     * @param lastErrorCode On of the [system error codes](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes)
+     * @param lastErrorCode One of the [system error codes](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes)
      * @return New LastError object
      */
 	static LastError New(DWORD lastErrorCode);
@@ -59,7 +59,7 @@ public:
     /**
      * @brief Construct a new Last Error object
      * 
-     * The new LastError object is created by submitting an system error code.
+     * The new LastError object is created by submitting a system error code.
      * 
      * @sa https://learn.microsoft.com/en-us/windows/win32/api/errhandlingapi/nf-errhandlingapi-getlasterror
      * 
